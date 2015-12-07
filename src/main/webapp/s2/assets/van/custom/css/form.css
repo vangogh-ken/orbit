@@ -1,0 +1,125 @@
+
+/**form table 表单样式***/
+.form-horizontal .td-label{
+  margin-right:20px;
+  width: 100px;
+  padding-top: 5px;
+  text-align: right;
+}
+
+.form-horizontal .van-table tbody tr td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.m-form-blank{
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.m-table tr th{
+	white-space: nowrap; 
+	height: 28px;
+	padding: 3px 3px;
+}
+
+.m-table tr td{
+	white-space: nowrap; 
+}
+
+.m-table th.sorting {
+	background-position: right -45px;
+	cursor: pointer;
+}
+
+.m-table th.sorting-asc {
+	background-position: right 4px;
+}
+
+.m-table th.sorting-desc {
+	background-position: right -23px;
+}
+
+
+.form-horizontal .van-table-view thead tr td {
+	border-top: 1px solid red;
+ border-bottom: 1px solid red;
+ border-left: 1px solid red;
+  border-right: 1px solid red;
+ padding-top: 5px;
+ padding-bottom: 5px;
+ padding-left: 5px;
+ padding-right: 5px;
+}
+
+.form-horizontal .van-table-view tbody tr td {
+	border-top: 1px solid red;
+ border-bottom: 1px solid red;
+ border-left: 1px solid red;
+ border-right: 1px solid red;
+ padding-top: 5px;
+ padding-bottom: 5px;
+ padding-left: 5px;
+ padding-right: 5px;
+}
+
+/****************Input 新打开的页面 ***********************/
+#m-main-input{
+	margin-left:10%;
+	margin-right:10%;
+}
+
+.table-input{
+	text-align: center;
+	width: 99%;
+}
+
+.table-input thead tr{
+padding: 2px 0px 2px 0px;
+height:20px;
+font-weight: bolder;
+font-size: 16px;
+font-family:华文宋体;
+}
+
+.table-input thead tr th{
+padding: 0px 0px 10px 0px;
+height:20px;
+font-weight: bolder;
+font-size: 20px;
+font-family:华文宋体;
+text-align:center;
+}
+
+.table-input tbody tr td{
+padding: 2px 0px 2px 0px;
+height:25px;
+border-left: 1px solid #9CA1B0;
+border-bottom: 1px solid #9CA1B0;
+border-top: 1px solid #9CA1B0;
+border-right: 1px solid #9CA1B0;
+font-weight: normal;
+font-size: 16px;
+font-family:黑体;
+text-align:left;
+}
+/**
+.table-input tbody tr th{
+padding: 2px 2px 2px 0px;
+height:20px;
+border-left: 1px solid #9CA1B0;
+border-bottom: 1px solid #9CA1B0;
+border-top: 1px solid #9CA1B0;
+border-right: 1px solid #9CA1B0;
+font-weight: bolder;
+font-size: 16px;
+font-family:华文仿宋;
+text-align:left;
+}
+**/
+.table-input .td-label{
+font-weight: normal;
+font-size: 16px;
+font-family:华文仿宋;
+text-align:left;
+}

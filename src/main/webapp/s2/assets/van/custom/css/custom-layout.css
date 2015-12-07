@@ -1,0 +1,812 @@
+
+/* Essentials */
+
+
+/*
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	background: white;
+	font-size: 12px;
+}
+
+label, input, button, select, textarea {
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 20px;
+}
+*/
+/**
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    font-size: 12px;
+	height: 16px;
+	line-height: 16px;
+}
+
+textarea {
+    height: auto;
+}
+
+select {
+	height: 26px;
+}
+
+a:link, a:visited {
+	color: #77BACE;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+fieldset {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #F6F6F6;
+	border: 1px solid #ccc;
+	padding: 1% 0%;
+	margin: 10px 0;
+}
+
+fieldset label {
+	display: block;
+	float: left;
+	width: 200px;
+	height: 25px;
+	line-height: 25px;
+	text-shadow: 0 1px 0 #fff;
+	font-weight: bold;
+	padding-left: 10px;
+	margin: -5px 0 5px 0;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+fieldset input[type=text] {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #BBBBBB;
+	height: 20px;
+	color: #666666;
+	-webkit-box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	-moz-box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	padding-left: 10px;
+	background-position: 10px 6px;
+	margin: 0;
+	display: block;
+	float: left;
+	width: 96%;
+	margin: 0 10px;
+}
+
+fieldset input[type=text]:focus {
+	outline: none;
+	border: 1px solid #77BACE;
+	-webkit-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+	-moz-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+	box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+}
+
+fieldset select {
+	width: 96%;
+	margin: 0 10px;
+	border: 1px solid #bbb;
+	height: 20px;
+	color: #666666;
+}
+
+fieldset textarea {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #BBBBBB;
+	color: #666666;
+	-webkit-box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	-moz-box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	box-shadow: inset 0 2px 2px #ccc, 0 1px 0 #fff;
+	padding-left: 10px;
+	background-position: 10px 6px;
+	margin: 0 0.5%;
+	display: block;
+	float: left;
+	width: 96%;
+	margin: 0 10px;
+}
+
+fieldset textarea:focus {
+	outline: none;
+	border: 1px solid #77BACE;
+	-webkit-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+	-moz-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+	box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+}
+
+.m-clear {
+	clear: both;
+}
+
+.m-spacer {
+	height: 20px;
+}
+**/
+/* header 
+
+#m-header h3.title {
+	padding-left:20px;
+	line-height:20px;
+}
+
+#m-header h3.title a {
+	text-decoration: none;
+	color: black;
+}
+
+#m-header div.info {
+	padding-top:10px;
+	padding-right:20px;
+}
+
+#m-header div.info a {
+	margin-left:15px;
+}
+
+#m-header .navbar-inner {
+	border-radius:0px;
+}
+*/
+/* sidebar 
+
+#m-sidebar .accordion-group {
+	margin-left: 10px;
+	border:1px solid #C2C2C3;
+}
+
+#m-sidebar .accordion-heading {
+	border-radius: 3px 3px 0px 0px;
+	background-color: #CCCCCC;
+	box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+	background: linear-gradient(to bottom, #FAFAFA 0%, #EFEFEF 100%) repeat scroll 0 0 transparent;
+	text-shadow: 0 1px 0 #FFFFFF;
+	color: #333333;
+}
+
+#m-sidebar .accordion-heading .accordion-toggle {
+    display: block;
+    padding: 5px 15px;
+}
+
+#m-sidebar .title {
+	color:black;
+	font-size:14px;
+	font-weight: bold;
+}
+*/
+/* footer 
+
+#m-footer hr {
+	margin-left: 10px;
+}
+*/
+/* main 
+
+#m-main {
+	float: right;
+	padding-right: 10px;
+}
+*/
+
+.m-clear {
+	clear: both;
+	word-wrap:break-word;
+}
+/* widget */
+
+.m-widget {
+	padding-top:5px;
+	padding-bottom:5px;
+	/**margin-bottom: 10px;**/
+	clear: both;
+}
+
+#btnAcrticle{
+	min-height: 45px;
+}
+
+#btnAcrticle .pull-right .m-page-size{
+	height: 28px;
+	font-size: 14px;
+	border:1px solid #e5e5e5;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+/**
+.m-widget:first-child{
+	height: 50px;
+}
+**/
+/**
+.m-widget:not(:last-child){
+	border:1px solid #ddd;
+	padding-left:10px;
+	padding-right:10px;
+}
+**/
+/**
+.m-widget:not(:has(.m-table or .table-input)){
+	border:1px solid #ddd;
+	padding-left:10px;
+	padding-right:10px;
+}
+**/
+#searchAcrticle, #btnAcrticle{
+	border:1px solid #ddd;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.m-form-dynamic{
+	/**overflow-x: scroll;**/
+	overflow-y: hidden;
+}
+
+/**标题图标位置修改**/
+.portlet > .portlet-title > .caption > i{
+	margin-top: 1px;
+}
+/**
+.m-widget .header {
+	height: 20px;
+	padding: 5px 15px;
+	border:1px solid #C2C2C3;
+	padding-left: 10px;
+	border-radius: 3px 3px 0px 0px;
+	background-color: #CCCCCC;
+	box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+	background: linear-gradient(to bottom, #FAFAFA 0%, #EFEFEF 100%) repeat scroll 0 0 transparent;
+	text-shadow: 0 1px 0 #FFFFFF;
+	color: #333333;
+}
+
+.m-widget .header .title {
+	float: left;
+	margin: 0px;
+	font-size:14px;
+}
+
+.m-widget .header .ctrl {
+	float: right;
+}
+
+.m-widget .header .ctrl .btn {
+	margin: 0px;
+	padding-left: 3px;
+	padding-right: 3px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.m-widget .content {
+	border-left: 1px solid #C2C2C3;
+	border-right: 1px solid #C2C2C3;
+	border-bottom: 1px solid #C2C2C3;
+	border-radius: 0px 0px 3px 3px;
+}
+
+.m-widget .content.content-inner {
+	padding-left: 10px;
+	padding-top:10px;
+	font-size: 12px;
+}
+
+.m-widget .content .table {
+	margin-bottom: 0px;
+}
+**/
+
+
+/* page 
+
+.m-page-size {
+	margin-bottom:0px;
+	width:55px;
+	display:inline;
+}
+*/
+/* Main Table */
+
+.m-table {
+	width: 100%;
+	margin: 0 0 0 0;
+	line-height: 16px;
+}
+
+.m-table thead tr {
+	height: 30px;
+	text-align: left;
+	text-indent: 5px;
+	cursor: pointer;
+}
+
+.m-table thead tr th{
+	font-size: 14px;
+	font-weight: 600;
+	font-family: 宋体;
+	/**border-top: 2px solid yellow;**/
+}
+/**禁止换行 overflow的时候会有scroll**/
+.m-table tr th{
+	white-space: nowrap; 
+}
+
+.m-table tr td{
+	white-space: nowrap; 
+}
+
+.m-table tbody tr{
+	height: 30px;
+	text-align: left;
+	/**text-indent: 10px;**/
+	text-indent: 5px;
+}
+.m-table tbody tr td{
+	margin: 3px 0px 3px 2px;
+	font-size: 14px;
+}
+/**
+.m-table tbody tr td a:not(.btn) {
+	margin: 3px 0px 3px 2px;
+	font-size: 14px;
+}
+**/
+.m-table input[type=image] {
+	margin-right: 10px;
+}
+
+.m-table input[type=checkbox] {
+	margin: 3px 3px 3px 2px;
+}
+
+.m-table th.sorting {
+	background: no-repeat url(../img/sorting.png);
+	background-position: right -46px;
+	cursor: pointer;
+	padding-right: 20px;
+}
+
+.m-table th.sorting-asc {
+	background-position: right 3px;
+	padding-right: 20px;
+}
+
+.m-table th.sorting-desc {
+	background-position: right -25px;
+	padding-right: 20px;
+}
+
+.m-table .select2-container{
+	margin: 0px 0px 0px -5px;
+}
+
+/* etc */
+
+.m-form-blank {
+	margin: 0px;
+}
+
+.m-form-bottom {
+	margin-bottom: 10px;
+}
+
+.m-table-check {
+	text-indent: 0px;
+	text-align: center;
+	width:30px;
+}
+
+.m-blank {
+	margin-bottom: 10px;
+}
+
+
+.form-inline .chzn-container {
+	vertical-align: middle;
+}
+
+/* Alerts */
+
+div.m-alert-info {
+	display: block;
+	width: 95%;
+	margin: 10px 3% 0 3%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #B5E5EF url(../img/icn_alert_info.png) no-repeat;
+	background-position: 10px 10px;
+	border: 1px solid #77BACE;
+	color: #082B33;
+	padding: 10px 0;
+	text-indent: 40px;
+	font-size: 14px;
+}
+
+div.m-alert-warning {
+	display: block;
+	width: 95%;
+	margin: 10px 3% 0 3%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #F5F3BA url(../img/icn_alert_warning.png) no-repeat;
+	background-position: 10px 10px;
+	border: 1px solid #C7A20D;
+	color: #796616;
+	padding: 10px 0;
+	text-indent: 40px;
+	font-size: 14px;
+}
+
+div.m-alert-error {
+	display: block;
+	width: 95%;
+	margin: 10px 3% 0 3%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #F3D9D9 url(../img/icn_alert_error.png) no-repeat;
+	background-position: 10px 10px;
+	border: 1px solid #D20009;
+	color: #7B040F;
+	padding: 10px 0;
+	text-indent: 40px;
+	font-size: 14px;
+}
+
+div.m-alert-success {
+	display: block;
+	width: 95%;
+	margin: 10px 3% 0 3%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #E2F6C5 url(../img/icn_alert_success.png) no-repeat;
+	background-position: 10px 10px;
+	border: 1px solid #79C20D;
+	color: #32510F;
+	padding: 10px 0;
+	text-indent: 40px;
+	font-size: 14px;
+}
+
+/**
+ * bootstrap modal
+ 
+.modal {
+    top: 50%;
+}
+
+.modal-backdrop, .modal-backdrop.fade.in {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+*/
+/**
+ * uniform
+ * 美化中文下的字体大小
+
+div.uploader span.filename {
+	font-size: 12px;
+}
+
+div.uploader span.action {
+	font-size: 12px;
+}
+ */
+/**
+ * boostrap里的配置会导致radio样式下包裹的radio样式margin-left:-20px;
+ * 导致被uniform渲染后的radio会跑到显示的radio的左边，无法点击到
+ * 这里设置为0px，让用户可以简单点击到
+ 
+.radio input[type="radio"],
+.checkbox input[type="checkbox"] {
+    float: left;
+    margin-left: 0px;
+}
+*/
+/**
+ * uniform里用的是checker，要和bootstrap里保持一致
+ 
+.radio.inline + .radio.inline,
+.checkbox.inline + .checkbox.inline,
+.checker.inline + .checker.inline {
+    margin-left: 10px;
+}
+*/
+/**
+ * uniform里checkbox的margin-right是5px，radio的margin-right是3px
+ * 为了避免上下不对齐，统一改成5px
+ 
+div.radio {
+    margin-right: 5px;
+}
+*/
+/**
+ * 输入框背景显示标尺
+ 
+input.measure-input {
+	background: url("../img/ruler.gif") repeat-x scroll 0 9px transparent;
+    border-color: #AAAAAA #CCCCCC #CCCCCC #AAAAAA;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    color: #777777;
+    font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+	outline: 0 none;
+    padding-bottom: 3px;
+}
+
+.navbar-inverse .navbar-search .search-query {
+    border-radius: 15px 15px 15px 15px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 0;
+    height: 20px;
+    background: none repeat scroll 0 0 rgba(35, 43, 48, 0.83);
+    border-color: #111111;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: gray;
+    transition: none 0s ease 0s;
+}
+
+.navbar-inverse .navbar-search .search-query:focus {
+    transition: width 0.3s ease 0s;
+    width: 100px;
+    background: white;
+}
+
+.navbar-inverse .navbar-search i {
+	position: absolute;
+	right: 10px;
+	top: 5px;
+}
+*/
+/**
+ * chozen中single select的search input高度过小的问题
+
+.chzn-search input[type="text"] {
+	height: 24px;
+}
+ */
+ 
+ /****************Input 新打开的页面 ***********************/
+#m-main-input{
+	margin-left:10%;
+	margin-right:10%;
+}
+
+.table-input{
+	text-align: center;
+	width: 100%;
+}
+
+.table-input thead tr{
+padding: 2px 0px 2px 0px;
+height:20px;
+font-weight: bolder;
+font-size: 16px;
+font-family:华文宋体;
+}
+
+.table-input thead tr th{
+padding: 5px 0px 5px 0px;
+height:20px;
+font-weight: bolder;
+font-size: 20px;
+font-family:华文宋体;
+text-align:center;
+border-left: 1px solid #9CA1B0;
+border-bottom: 1px solid #9CA1B0;
+border-top: 1px solid #9CA1B0;
+border-right: 1px solid #9CA1B0;
+}
+
+.table-input tbody tr{
+border-left: 1px solid #9CA1B0;
+border-bottom: 1px solid #9CA1B0;
+border-top: 1px solid #9CA1B0;
+border-right: 1px solid #9CA1B0;
+}
+
+.table-input tbody tr td{
+padding: 2px 0px 2px 0px;
+height:25px;
+border-left: 1px solid #9CA1B0;
+border-bottom: 1px solid #9CA1B0;
+border-top: 1px solid #9CA1B0;
+border-right: 1px solid #9CA1B0;
+font-weight: normal;
+font-size: 14px;
+font-family:宋体;
+text-align:left;
+min-width: 100px;
+}
+
+
+
+
+/*标题样式*/
+.table-input tbody tr:not(.tr-title) td:nth-child(2n+1){
+	/**background-color: #b6decb;
+	background-color: #eaeaea;
+	**/
+	background-color: #FAEBD7;
+}
+
+.table-input tbody tr td input,select{
+  background-color: white;
+}
+
+.table-input .td-label{
+padding-left:5px;
+padding-top:3px;
+font-weight: 400;
+font-size: 14px;
+font-family:宋体;
+text-align:left;
+white-space: nowrap; 
+}
+
+
+.table-input .tr-title td{
+font-weight: 600;
+font-size: 16px;
+font-family:华文宋体;
+text-align:left;
+white-space: nowrap; 
+padding: 2px 5px 2px 5px;
+cursor: pointer;
+}
+
+
+/*****************树形结构****************
+.tree-list{
+	display: block; position: relative; margin: 0; padding: 0; list-style: none; 
+}
+
+.tree-list-item{
+	display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px;
+}
+
+.tree-item { 
+	display: block; height: 30px; margin: 5px 0; cursor: pointer; 
+	padding: 5px 10px; color: #333; text-decoration: none; font-weight: 400; 
+	/**border: 1px solid #ccc; background: #fafafa;**/
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.tree-item:hover { color: #2ea8e5; background: #fff; }
+
+/*****************user role picker********************/
+.input-icon .add-on{
+	margin-top: 5px;
+	padding:2px;
+	cursor: pointer;
+}
+/*****************可变表格列大小CSS********************/
+.rc-handle-container {
+  position: relative;
+}
+.rc-handle {
+  position: absolute;
+  width: 7px;
+  cursor: ew-resize;
+  margin-left: -3px;
+  z-index: 2;
+}
+table.rc-table-resizing {
+  cursor: ew-resize;
+}
+table.rc-table-resizing thead,
+table.rc-table-resizing thead > th,
+table.rc-table-resizing thead > th > a {
+  cursor: ew-resize;
+}
+
+/********右上角菜单*******/
+
+.btn.white{
+	border: solid #858585 1px;
+	margin: -2px -2px -2px -2px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.btn.white:HOVER{
+	background-color: #858585;
+}
+
+input[type="radio"]{
+	cursor: pointer;
+}
+/**
+备用颜色，深绿色
+#2eafaf
+rgb(0, 92, 87)
+background-color: rgb(13, 62, 59);
+#b7e4e3
+**/
+
+/*高斯模糊*/
+.blur {
+-webkit-filter: blur(10px); /* Chrome, Opera */
+   -moz-filter: blur(10px);
+    -ms-filter: blur(10px);    
+        filter: blur(10px);
+
+filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE11 */
+}
+
+/*首页图片高斯模糊*/
+.img-responsive:HOVER {
+	-webkit-filter: blur(3px); /* Chrome, Opera */
+   -moz-filter: blur(3px);
+    -ms-filter: blur(3px);    
+        filter: blur(3px);
+
+filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=false); /* IE6~IE11 */
+}
+/**高斯模糊class**/
+.gauss-blur {
+	-webkit-filter: blur(3px); /* Chrome, Opera */
+   -moz-filter: blur(3px);
+    -ms-filter: blur(3px);    
+        filter: blur(3px);
+
+filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=false); /* IE6~IE11 */
+}
+
+.dropzone-custom{
+	min-height:120px;cursor: pointer;background-color:#cecece;border:1px solid #cecece;
+}
+
+/* .modal.fade:HOVER .page-container{
+	-webkit-filter: blur(3px); Chrome, Opera
+   -moz-filter: blur(3px);
+    -ms-filter: blur(3px);    
+        filter: blur(3px);
+
+filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=false); IE6~IE11
+} */
+
+.selected-tr{
+	border-bottom: 2px solid #EAC100;
+}
+
+/**查询界面字段信息的分割**/
+.search-btn-spliter{
+	padding: 0px 0px 0px 0px;
+}
+.search-input-spliter{
+	padding: 0px 0px 0px 0px;
+	margin: 2px 0px 2px 0px;
+}
+/* .dz-clickable form{
+	height:50px;
+	cursor: pointer;
+} */
+/**
+
+td 内容自动换行 table表格td设置宽度后文字太多自动换行
+设置table 的 style="table-layout:fixed;" 然后设置td的 style="word-wrap:break-word;" 即可
+
+**/

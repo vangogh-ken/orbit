@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="basisvalue">
+	<!-- <cache type="org.mybatis.caches.ehcache.LoggingEhcache" /> -->
+	<sql id="selectId">
+		CREATE_TIME AS createTime,
+		STATUS AS status,
+		STRING_VALUE AS
+		stringValue,
+		DOUBLE_VALUE AS doubleValue,
+		ID AS id,
+		DESCN AS descn,
+		MODIFY_TIME AS modifyTime,
+		TEXT_VALUE AS textValue,
+		INT_VALUE AS
+		intValue,
+		DATE_VALUE AS dateValue,
+		DISP_INX AS displayIndex,
+
+		BASIS_ATTR_ID,
+		BASIS_SUBSTANCE_ID
+	</sql>
+
+	<resultMap id="basisValueMap" type="org.cc.automate.db.entity.BasisValue">
+		<id property="id" column="ID" />
+		<result property="stringValue" column="STRING_VALUE" />
+		<result property="textValue" column="TEXT_VALUE" />
+		<result property="doubleValue" column="DOUBLE_VALUE" />
+		<result property="intValue" column="INT_VALUE" />
+		<result property="dateValue" column="DATE_VALUE" />
+
+		<result property="descn" column="DESCN" />
+		<result property="status" column="STATUS" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="modifyTime" column="MODIFY_TIME" />
+		<result property="displayIndex" column="DISP_INX" />
+
+		<association property="basisAttribute" column="BASIS_ATTR_ID"
+			select="basisattribute.getById"></association>
+		<association property="basisSubstance" column="BASIS_SUBSTANCE_ID"
+			select="basissubstance.getById"></association>
+	</resultMap>
+
+	<select id="query" parameterType="java.util.HashMap" useCache="false"
+		resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE
+		<where>
+			<if test="t.createTime != null and t.createTime != ''">
+				and CREATE_TIME = #{t.createTime}
+			</if>
+			<if test="t.basisSubstance != null and t.basisSubstance != ''">
+				and BASIS_SUBSTANCE_ID = #{t.basisSubstance.id}
+			</if>
+			<if test="t.status != null and t.status != ''">
+				and STATUS = #{t.status}
+			</if>
+			<if test="t.stringValue != null and t.stringValue != ''">
+				and STRING_VALUE = #{t.stringValue}
+			</if>
+			<if test="t.doubleValue != null and t.doubleValue != ''">
+				and DOUBLE_VALUE = #{t.doubleValue}
+			</if>
+			<if test="t.basisAttribute != null and t.basisAttribute != ''">
+				and BASIS_ATTR_ID = #{t.basisAttribute.id}
+			</if>
+			<if test="t.id != null and t.id != ''">
+				and ID = #{t.id}
+			</if>
+			<if test="t.descn != null and t.descn != ''">
+				and DESCN = #{t.descn}
+			</if>
+			<if test="t.modifyTime != null and t.modifyTime != ''">
+				and MODIFY_TIME = #{t.modifyTime}
+			</if>
+			<if test="t.textValue != null and t.textValue != ''">
+				and TEXT_VALUE = #{t.textValue}
+			</if>
+			<if test="t.intValue != null and t.intValue != ''">
+				and INT_VALUE = #{t.intValue}
+			</if>
+			<if test="t.dateValue != null and t.dateValue != ''">
+				and DATE_VALUE = #{t.dateValue}
+			</if>
+			<if test="t.displayIndex != null and t.displayIndex != ''">
+				and DISP_INX = #{t.displayIndex}
+			</if>
+			<if test="pager.filterText != null and pager.filterText != ''">
+				and ${pager.filterText}
+			</if>
+		</where>
+		<!-- 排序的时候不要使用预处理，不然排序无效，因此此处使用$取值，拼接SQL -->
+		<if test="pager.orderBy != null and pager.orderBy != ''">
+			order by ${pager.orderBy}
+			<if test="pager.order != null and pager.order != ''">
+				<if test="pager.order == 'ASC'">
+					ASC
+				</if>
+				<if test="pager.order == 'DESC'">
+					DESC
+				</if>
+			</if>
+		</if>
+	</select>
+
+	<select id="queryForList" parameterType="BasisValue" resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE
+		<where>
+			<if test="createTime != null and createTime != ''">
+				and CREATE_TIME = #{createTime}
+			</if>
+			<if test="basisSubstance != null and basisSubstance != ''">
+				and BASIS_SUBSTANCE_ID = #{basisSubstance.id}
+			</if>
+			<if test="status != null and status != ''">
+				and STATUS = #{status}
+			</if>
+			<if test="stringValue != null and stringValue != ''">
+				and STRING_VALUE = #{stringValue}
+			</if>
+			<if test="doubleValue != null and doubleValue != ''">
+				and DOUBLE_VALUE = #{doubleValue}
+			</if>
+			<if test="basisAttribute != null and basisAttribute != ''">
+				and BASIS_ATTR_ID = #{basisAttribute.id}
+			</if>
+			<if test="id != null and id != ''">
+				and ID = #{id}
+			</if>
+			<if test="descn != null and descn != ''">
+				and DESCN = #{descn}
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				and MODIFY_TIME = #{modifyTime}
+			</if>
+			<if test="textValue != null and textValue != ''">
+				and TEXT_VALUE = #{textValue}
+			</if>
+			<if test="intValue != null and intValue != ''">
+				and INT_VALUE = #{intValue}
+			</if>
+			<if test="dateValue != null and dateValue != ''">
+				and DATE_VALUE = #{dateValue}
+			</if>
+			<if test="displayIndex != null and displayIndex != ''">
+				and DISP_INX = #{displayIndex}
+			</if>
+		</where>
+	</select>
+
+	<select id="getAll" resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE
+	</select>
+
+	<select id="count" parameterType="BasisValue" resultType="int">
+		select count(0) from BASIS_VALUE
+		<where>
+			<if test="createTime != null and createTime != ''">
+				and CREATE_TIME = #{createTime}
+			</if>
+			<if test="basisSubstance != null and basisSubstance != ''">
+				and BASIS_SUBSTANCE_ID = #{basisSubstance.id}
+			</if>
+			<if test="status != null and status != ''">
+				and STATUS = #{status}
+			</if>
+			<if test="stringValue != null and stringValue != ''">
+				and STRING_VALUE = #{stringValue}
+			</if>
+			<if test="doubleValue != null and doubleValue != ''">
+				and DOUBLE_VALUE = #{doubleValue}
+			</if>
+			<if test="basisAttribute != null and basisAttribute != ''">
+				and BASIS_ATTR_ID = #{basisAttribute.id}
+			</if>
+			<if test="id != null and id != ''">
+				and ID = #{id}
+			</if>
+			<if test="descn != null and descn != ''">
+				and DESCN = #{descn}
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				and MODIFY_TIME = #{modifyTime}
+			</if>
+			<if test="textValue != null and textValue != ''">
+				and TEXT_VALUE = #{textValue}
+			</if>
+			<if test="intValue != null and intValue != ''">
+				and INT_VALUE = #{intValue}
+			</if>
+			<if test="dateValue != null and dateValue != ''">
+				and DATE_VALUE = #{dateValue}
+			</if>
+			<if test="displayIndex != null and displayIndex != ''">
+				and DISP_INX = #{displayIndex}
+			</if>
+		</where>
+	</select>
+
+	<insert id="add" parameterType="BasisValue">
+		insert into BASIS_VALUE( CREATE_TIME, BASIS_SUBSTANCE_ID, STATUS,
+		STRING_VALUE, DOUBLE_VALUE, BASIS_ATTR_ID, ID, DESCN, MODIFY_TIME,
+		TEXT_VALUE, INT_VALUE, DATE_VALUE, DISP_INX )values ( #{createTime},
+		#{basisSubstance.id}, #{status}, #{stringValue}, #{doubleValue},
+		#{basisAttribute.id},
+		<if test="id != null and id != '' ">
+			#{id},
+		</if>
+		<if test="id == null or id == '' ">
+			UUID(),
+		</if>
+		#{descn},
+		#{modifyTime},
+		#{textValue},
+		#{intValue},
+		#{dateValue},
+		#{displayIndex}
+		)
+	</insert>
+
+	<insert id="insertBatch" parameterType="ArrayList">
+		INSERT INTO BASIS_VALUE( CREATE_TIME, BASIS_SUBSTANCE_ID, STATUS,
+		STRING_VALUE, DOUBLE_VALUE,
+		BASIS_ATTR_ID, ID, DESCN, MODIFY_TIME,TEXT_VALUE, INT_VALUE, DATE_VALUE, DISP_INX
+		)values
+		<foreach collection="list" item="t" index="index" separator=",">
+			(#{t.createTime},
+			#{t.basisSubstance.id}, #{t.status},
+			#{t.stringValue}, #{t.doubleValue},
+			#{t.basisAttribute.id},
+			<if test="t.id != null and t.id != '' ">
+				#{t.id},
+			</if>
+			<if test="t.id == null or t.id == '' ">
+				UUID(),
+			</if>
+			#{t.descn},
+			#{t.modifyTime},
+			#{t.textValue},
+			#{t.intValue},
+			#{t.dateValue},
+			#{t.displayIndex}
+			)
+		</foreach>
+	</insert>
+
+	<delete id="deleteById" parameterType="String">
+		delete from BASIS_VALUE
+		where id=#{id}
+	</delete>
+
+	<delete id="deleteByBasisSubstanceId" parameterType="String">
+		delete from
+		BASIS_VALUE where BASIS_SUBSTANCE_ID=#{basisSubstanceId}
+	</delete>
+
+	<select id="getById" parameterType="String" resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE where id=#{id}
+	</select>
+
+	<!-- 获取对象所有值 -->
+	<select id="getByBasisSubstanceId" parameterType="String"
+		resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE where BASIS_SUBSTANCE_ID=#{basisSubstanceId}
+	</select>
+
+	<!-- 获取单个值 -->
+	<select id="getByBasisAttributeId" parameterType="String"
+		resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE where BASIS_SUBSTANCE_ID=#{basisSubstanceId}
+		AND BASIS_ATTR_ID=#{basisAttributeId}
+	</select>
+
+	<select id="getByBasisAttributeColumn" parameterType="String"
+		resultMap="basisValueMap">
+		select
+		<include refid="selectId" />
+		from BASIS_VALUE where BASIS_SUBSTANCE_ID=#{basisSubstanceId}
+		AND BASIS_ATTR_ID IN (SELECT ID FROM BASIS_ATTR WHERE
+		ATTR_COLUMN=#{basisAttributeColumn})
+		LIMIT 1
+	</select>
+
+	<update id="update" parameterType="BasisValue">
+		update BASIS_VALUE
+		<set>
+			<if test="createTime != null and createTime != ''">
+				CREATE_TIME=#{createTime},
+			</if>
+			<if test="basisSubstance != null and basisSubstance != ''">
+				BASIS_SUBSTANCE_ID=#{basisSubstance.id},
+			</if>
+			<if test="status != null and status != ''">
+				STATUS=#{status},
+			</if>
+
+			STRING_VALUE=#{stringValue},
+			DOUBLE_VALUE=#{doubleValue},
+			TEXT_VALUE=#{textValue},
+			INT_VALUE=#{intValue},
+			DATE_VALUE=#{dateValue},
+
+			<!-- <if test="stringValue != null and stringValue != ''"> STRING_VALUE=#{stringValue}, 
+				</if> <if test="doubleValue != null and doubleValue != ''"> DOUBLE_VALUE=#{doubleValue}, 
+				</if> <if test="textValue != null and textValue != ''"> TEXT_VALUE=#{textValue}, 
+				</if> <if test="intValue != null and intValue != ''"> INT_VALUE=#{intValue}, 
+				</if> <if test="dateValue != null and dateValue != ''"> DATE_VALUE=#{dateValue}, 
+				</if> -->
+			<if test="basisAttribute != null and basisAttribute != ''">
+				BASIS_ATTR_ID=#{basisAttribute.id},
+			</if>
+			<if test="id != null and id != ''">
+				ID=#{id},
+			</if>
+			<if test="descn != null and descn != ''">
+				DESCN=#{descn},
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				MODIFY_TIME=#{modifyTime},
+			</if>
+
+			<if test="displayIndex != null and displayIndex != ''">
+				DISP_INX=#{displayIndex},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<!-- 批量操作时，数据库URL连接添加参数 allowMultiQueries=true -->
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach collection="list" item="t" index="index" open="" close="" separator=";">
+			<!-- <foreach collection="list" item="t" index="index" open="begin" close=";end;" 
+				separator=";"> -->
+			update BASIS_VALUE
+			<set>
+				<if test="t.createTime != null and t.createTime != ''">
+					CREATE_TIME=#{t.createTime},
+				</if>
+				<if test="t.basisSubstance != null and t.basisSubstance != ''">
+					BASIS_SUBSTANCE_ID=#{t.basisSubstance.id},
+				</if>
+				<if test="t.status != null and t.status != ''">
+					STATUS=#{t.status},
+				</if>
+
+				STRING_VALUE=#{t.stringValue},
+				DOUBLE_VALUE=#{t.doubleValue},
+				TEXT_VALUE=#{t.textValue},
+				INT_VALUE=#{t.intValue},
+				DATE_VALUE=#{t.dateValue},
+
+				<!-- <if test="t.stringValue != null and t.stringValue != ''"> STRING_VALUE=#{t.stringValue}, 
+					</if> <if test="t.doubleValue != null and t.doubleValue != ''"> DOUBLE_VALUE=#{t.doubleValue}, 
+					</if> <if test="t.textValue != null and t.textValue != ''"> TEXT_VALUE=#{t.textValue}, 
+					</if> <if test="t.intValue != null and t.intValue != ''"> INT_VALUE=#{t.intValue}, 
+					</if> <if test="t.dateValue != null and t.dateValue != ''"> DATE_VALUE=#{t.dateValue}, 
+					</if> -->
+
+				<if test="t.basisAttribute != null and t.basisAttribute != ''">
+					BASIS_ATTR_ID=#{t.basisAttribute.id},
+				</if>
+				<if test="t.id != null and t.id != ''">
+					ID=#{t.id},
+				</if>
+				<if test="t.descn != null and t.descn != ''">
+					DESCN=#{t.descn},
+				</if>
+				<if test="t.modifyTime != null and t.modifyTime != ''">
+					MODIFY_TIME=#{t.modifyTime},
+				</if>
+
+				<if test="t.displayIndex != null and t.displayIndex != ''">
+					DISP_INX=#{t.displayIndex},
+				</if>
+			</set>
+			where id=#{t.id}
+		</foreach>
+	</update>
+
+	<delete id="deleteBatch" parameterType="java.util.List">
+		DELETE FROM BASIS_VALUE WHERE ID IN
+		<foreach collection="list"  item="t" index="index" open="(" separator="," close=")" >
+			#{t.id}
+		</foreach>
+	</delete>
+</mapper>

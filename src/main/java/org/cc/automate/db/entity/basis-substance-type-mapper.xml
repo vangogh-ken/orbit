@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="basissubstancetype">
+	<!--  
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+	-->
+	<sql id="selectId">
+		DESCN AS descn,
+		TYPE_NAME AS typeName,
+		ID AS id,
+		CREATE_TIME AS createTime,
+		STATUS AS status,
+		MODIFY_TIME AS modifyTime,
+		DISP_INX AS displayIndex
+	</sql>
+
+	<select id="query" parameterType="java.util.HashMap" useCache="false"
+		resultType="BasisSubstanceType">
+		select
+		<include refid="selectId" />
+		from BASIS_SUBSTANCE_TYPE
+		<where>
+			<if test="t.descn != null and t.descn != ''">
+				and DESCN = #{t.descn}
+			</if>
+			<if test="t.typeName != null and t.typeName != ''">
+				and TYPE_NAME = #{t.typeName}
+			</if>
+			<if test="t.id != null and t.id != ''">
+				and ID = #{t.id}
+			</if>
+			<if test="t.createTime != null and t.createTime != ''">
+				and CREATE_TIME = #{t.createTime}
+			</if>
+			<if test="t.status != null and t.status != ''">
+				and STATUS = #{t.status}
+			</if>
+			<if test="t.modifyTime != null and t.modifyTime != ''">
+				and MODIFY_TIME = #{t.modifyTime}
+			</if>
+			<if test="t.displayIndex != null and t.displayIndex != ''">
+				and DISP_INX = #{t.displayIndex}
+			</if>
+			<if test="pager.filterText != null and pager.filterText != ''">
+				and ${pager.filterText}
+			</if>
+		</where>
+		<!-- 排序的时候不要使用预处理，不然排序无效，因此此处使用$取值，拼接SQL -->
+		<if test="pager.orderBy != null and pager.orderBy != ''">
+			order by ${pager.orderBy}
+			<if test="pager.order != null and pager.order != ''">
+				<if test="pager.order == 'ASC'">
+					ASC
+				</if>
+				<if test="pager.order == 'DESC'">
+					DESC
+				</if>
+			</if>
+		</if>
+	</select>
+
+	<select id="queryForList" parameterType="BasisSubstanceType"
+		resultType="BasisSubstanceType">
+		select
+		<include refid="selectId" />
+		from BASIS_SUBSTANCE_TYPE
+		<where>
+			<if test="descn != null and descn != ''">
+				and DESCN = #{descn}
+			</if>
+			<if test="typeName != null and typeName != ''">
+				and TYPE_NAME = #{typeName}
+			</if>
+			<if test="id != null and id != ''">
+				and ID = #{id}
+			</if>
+			<if test="createTime != null and createTime != ''">
+				and CREATE_TIME = #{createTime}
+			</if>
+			<if test="status != null and status != ''">
+				and STATUS = #{status}
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				and MODIFY_TIME = #{modifyTime}
+			</if>
+			<if test="displayIndex != null and displayIndex != ''">
+				and DISP_INX = #{displayIndex}
+			</if>
+		</where>
+	</select>
+
+	<select id="getAll" resultType="BasisSubstanceType">
+		select
+		<include refid="selectId" />
+		from BASIS_SUBSTANCE_TYPE
+	</select>
+
+	<select id="count" parameterType="BasisSubstanceType"
+		resultType="int">
+		select count(0) from BASIS_SUBSTANCE_TYPE
+		<where>
+			<if test="descn != null and descn != ''">
+				and DESCN = #{descn}
+			</if>
+			<if test="typeName != null and typeName != ''">
+				and TYPE_NAME = #{typeName}
+			</if>
+			<if test="id != null and id != ''">
+				and ID = #{id}
+			</if>
+			<if test="createTime != null and createTime != ''">
+				and CREATE_TIME = #{createTime}
+			</if>
+			<if test="status != null and status != ''">
+				and STATUS = #{status}
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				and MODIFY_TIME = #{modifyTime}
+			</if>
+			<if test="displayIndex != null and displayIndex != ''">
+				and DISP_INX = #{displayIndex}
+			</if>
+		</where>
+	</select>
+
+	<insert id="add" parameterType="BasisSubstanceType">
+		insert into BASIS_SUBSTANCE_TYPE( DESCN, TYPE_NAME, ID, CREATE_TIME,
+		STATUS, MODIFY_TIME, DISP_INX )values ( #{descn}, #{typeName},
+		<if test="id != null and id != '' ">
+			#{id},
+		</if>
+		<if test="id == null or id == '' ">
+			UUID(),
+		</if>
+		#{createTime},
+		#{status},
+		#{modifyTime},
+		#{displayIndex}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="String">
+		delete from BASIS_SUBSTANCE_TYPE where id=#{id}
+	</delete>
+
+	<select id="getById" parameterType="String" resultType="BasisSubstanceType">
+		select
+		<include refid="selectId" />
+		from BASIS_SUBSTANCE_TYPE where id=#{id}
+	</select>
+
+	<update id="update" parameterType="BasisSubstanceType">
+		update BASIS_SUBSTANCE_TYPE
+		<set>
+			<if test="descn != null and descn != ''">
+				DESCN=#{descn},
+			</if>
+			<if test="typeName != null and typeName != ''">
+				TYPE_NAME=#{typeName},
+			</if>
+			<if test="id != null and id != ''">
+				ID=#{id},
+			</if>
+			<if test="createTime != null and createTime != ''">
+				CREATE_TIME=#{createTime},
+			</if>
+			<if test="status != null and status != ''">
+				STATUS=#{status},
+			</if>
+			<if test="modifyTime != null and modifyTime != ''">
+				MODIFY_TIME=#{modifyTime},
+			</if>
+			<if test="displayIndex != null and displayIndex != ''">
+				DISP_INX=#{displayIndex},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+</mapper>
