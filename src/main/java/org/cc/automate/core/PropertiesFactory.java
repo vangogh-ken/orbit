@@ -18,7 +18,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class PropertiesFactory extends PropertiesLoaderSupport
         implements FactoryBean<Properties>, InitializingBean {
 	private static Logger LOG = LoggerFactory.getLogger(PropertiesFactory.class);
