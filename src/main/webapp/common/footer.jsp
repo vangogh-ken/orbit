@@ -54,6 +54,7 @@
     <script src="${ctx}/s2/assets/plugins/jquery-sliding-message/jquery.slidingmessage.min.js" type="text/javascript" ></script>
     <script src="${ctx}/s2/assets/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
     <script src="${ctx}/s2/assets/plugins/socketjs/sockjs-1.0.3.min.js" type="text/javascript"></script>
+    <script src="${ctx}/s2/assets/plugins/stompjs/stomp.js" type="text/javascript"></script>
     
     <!-- time picker -->
     <script src="${ctx}/s2/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript" ></script>
@@ -255,96 +256,9 @@
     		}
     	});
     	
-    	//推送信息
-    	/* function pollAttention(){
-    		$.post('../base/poll-attention.do', function(data){
-    			var unreadMails = data.unreadMails;
-    			var unreadMsgs = data.unreadMsgs;
-    			var handleTasks = data.handleTasks;
-    			var claimTasks = data.claimTasks;
-    			if(unreadMails != null && unreadMails.results.length > 0){
-    				$('#unreadMailsSizeSpan').text(unreadMails.totalCount);
-    				$('#unreadMailsSizeP').text('你有' + unreadMails.totalCount + '封未读邮件');
-    				var html = '';
-    				$.each(unreadMails.results, function(i, item){
-    					html += '<li>';
-    					html += '<a href="../out/mail-receive-view.do?id='+ item.id +'">';
-    					html += '<span class="photo"><img src="${ctx}/s2/assets/img/avatar1.jpg" alt="" /></span> ';
-    					html += '<span class="subject"> ';
-    					html += '<span class="from">'+ item.addressFrom +'</span> ';
-    					html += '<span class="time">'+ item.status +'</span>';
-    					html += '</span> ';
-    					html += '<span class="message">'+ item.subject +'</span>';
-    					html += '</a>';
-    					html += '</li>';
-    				});
-    				$('#unreadMailsUl').html(html);
-    			}else{
-    				$('#unreadMailsSizeSpan').text(0);
-    			}
-    			
-    			if(unreadMsgs != null && unreadMsgs.results.length > 0){
-    				$('#unreadMsgsSizeSpan').text(unreadMsgs.totalCount);
-    				$('#unreadMsgsSizeP').text('你有' + unreadMsgs.totalCount + '封未读消息');
-    				var html = '';
-    				$.each(unreadMsgs.results, function(i, item){
-    					html += '<li>';
-    					html += '<a href="../out/msg-info-reply.do?id='+ item.id +'">';
-    					html += '<span class="photo"><img src="${ctx}/s2/assets/img/avatar1.jpg" alt="" /></span> ';
-    					html += '<span class="subject"> ';
-    					html += '<span class="from">'+ item.sender.displayName +'</span> ';
-    					html += '<span class="time">'+ item.msgType +'</span>';
-    					html += '</span> ';
-    					html += '<span class="message">'+ item.content +'</span>';
-    					html += '</a>';
-    					html += '</li>';
-    				});
-    				$('#unreadMsgsUl').html(html);
-    			}else{
-    				$('#unreadMsgsSizeSpan').text(0);
-    			}
-    			
-    			if(handleTasks != null && handleTasks.results.length > 0){
-    				$('#handleTasksSizeSpan').text(handleTasks.totalCount);
-    				$('#handleTasksSizeP').text('你有' + handleTasks.totalCount + '个待处理任务');
-    				var html = '';
-    				$.each(handleTasks.results, function(i, item){
-    					
-    					html += '<li><a href="../bpm/workspace-task-handle-input.do?taskId='+ item.id +'" target="_blank"">';
-    					html += '<span class="task">';
-    					html += '<span class="desc" style="width: 50px;">'+ item.processName +'</span> ';
-    					html += '<span class="percent">'+ item.name +'</span>';
-    					html += '</span> ';
-    					html += '</a>';
-    					html += '</li>';
-    				});
-    				$('#handleTasksUl').html(html);
-    			}else{
-    				$('#handleTasksSizeSpan').text(0);
-    			}
-    			
-    			if(claimTasks != null && claimTasks.results.length > 0){
-    				$('#claimTasksSizeSpan').text(claimTasks.totalCount);
-    				$('#claimTasksSizeP').text('你有' + claimTasks.totalCount + '个待领取任务');
-    				var html = '';
-    				$.each(claimTasks.results, function(i, item){
-    					html += '<li><a href="../bpm/bpm-view-business.do?processInstanceId='+ item.processInstanceId +'" target="_blank"">';
-    					html += '<span class="task">';
-    					html += '<span class="desc" style="width: 50px;">'+ item.processName +'</span> ';
-    					html += '<span class="percent">'+ item.name +'</span>';
-    					html += '</span> ';
-    					html += '</a>';
-    					html += '</li>';
-    				});
-    				$('#claimTasksUl').html(html);
-    			}else{
-    				$('#claimTasksSizeSpan').text(0);
-    			}
-    		})
-    	}
     	//消息推送 
     	var toastCount = 0;
-    	function toastrMessgae(messageType, messageTitle,  messageText){
+    	function toastrMessgae(messageType, messageTitle, messageText){
             var msg = messageText;
             var title = messageType;//messageType success info warning error
             var toastIndex = toastCount++;
@@ -372,17 +286,39 @@
     	$(function(){
 			if(window.location.href.indexOf('login.do') < 0
 					&& window.location.href.indexOf('loginCheck.do') < 0){
-				websocketConnect();
+				connect();
 			}
     	});
-    	var websocket = null;
+    	
+    	var stompClient = null;
+    	function connect(){
+    		var socket = new SockJS('${ctx}/notify');
+    		stompClient = Stomp.over(socket);
+    		stompClient.heartbeat.outgoing = 1000;
+    		stompClient.heartbeat.incoming = 1000;
+    		stompClient.connect({}, function(frame){
+    			//console.log('connected : ' + frame);
+    			stompClient.subscribe('/user/${USER_ID}/info', function(data){
+    				//console.log('body: ' + $.parseJSON(data.body).message);
+    				toastrMessgae('info', '消息推送', $.parseJSON(data.body).message);
+    			});
+    		}, function(error){
+    			console.log('STOMP : ' + error);
+    		});
+    	}
+    	
+    	function disconnect(){
+    		stompClient.disconnect();
+    	}
+    	
+    	/* var websocket = null;
     	function websocketConnect(){
     		if('WebSocket' in window){
-                websocket = new WebSocket('ws://' + window.location.host + '${ctx}' + '/websocket.do');
+                websocket = new WebSocket('ws://' + window.location.host + '${ctx}' + '/system_greet');
             }else if('MozWebSocket' in window) {
-                websocket = new MozWebSocket('wss://' + window.location.host + '${ctx}' + '/websocket.do');
+                websocket = new MozWebSocket('wss://' + window.location.host + '${ctx}' + '/system_greet');
             }else{
-            	websocket = new SockJS('/sockjs/websocket.do');
+            	websocket = new SockJS('/sockjs/system_greet');
             	//websocket = new SockJS('ws://' + window.location.host + '${ctx}' + '/sockjs/websocket.do');
             }
     		//获取连接
@@ -397,7 +333,7 @@
             //连接错误
             websocket.onerror = function(evnt){
             	console.log('connection error');
-            	//console.log(event);
+            	console.log(event);
             	if (websocket != null){
 					websocket.close();
 					websocket = null;
@@ -419,14 +355,5 @@
 		//发送消息
 		function websocketSend(messageText){
 			websocket.send(messageText);
-		}
-		 */
-    	
-		//窗口最大化
-    	/* function winLargest(){
-    		var windowWidth = window.screen.availWidth;
-    		var windowHeight = window.screen.availHeight;
-    		window.moveTo(0,0);
-    		window.resizeTo(windowWidth,windowHeight);
-    	} */
+		} */
 </script>

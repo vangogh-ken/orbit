@@ -4,7 +4,9 @@ import javax.servlet.Filter;
 import javax.servlet.ServletRegistration;
 
 import org.cc.automate.core.CP_SpringContext;
+import org.cc.automate.core.filter.UrlPutFilter;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
@@ -48,14 +50,16 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 	  */
     @Override
     protected Filter[] getServletFilters() {
-        //编码
+    	SecurityContextPersistenceFilter securityContextPersistenceFilter = new SecurityContextPersistenceFilter();
+    	//编码
     	CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         //Restful相关类型方法转换
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
-        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter};
-        //return new Filter[] {characterEncodingFilter};
+        
+        UrlPutFilter urlPutFilter = new UrlPutFilter();
+        return new Filter[] {securityContextPersistenceFilter, characterEncodingFilter, hiddenHttpMethodFilter, urlPutFilter};
     }
   
     /*

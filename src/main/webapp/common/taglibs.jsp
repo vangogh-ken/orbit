@@ -1,6 +1,10 @@
 <%@page language="java" pageEncoding="UTF-8" %>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
-
+<%@page import="org.cc.automate.core.Constant" %>
+<%
+//pageContext.setAttribute(Constant.USER_ID,  request.getSession().getAttribute(Constant.USER_ID));
+pageContext.setAttribute(Constant.USER_ID,  "admin");
+%>
 <%pageContext.setAttribute("ctx",  request.getContextPath());%>
 <%pageContext.setAttribute("locale",  request.getLocale());%>
 <%pageContext.setAttribute("currentUser",  request.getSession().getAttribute("userSession"));%>

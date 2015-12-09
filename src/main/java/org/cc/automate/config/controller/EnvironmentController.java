@@ -78,7 +78,6 @@ public class EnvironmentController extends BaseController{
 		}
 	}
 	
-	
 	/**
 	 * 校验逻辑并生成配置文件
 	 * @param basisSubstanceId
@@ -86,7 +85,19 @@ public class EnvironmentController extends BaseController{
 	 */
 	@RequestMapping(value = "/{basisSubstanceId}/initiate", method = RequestMethod.GET)
 	public Map<String, Object> initiate(@PathVariable String basisSubstanceId){
-		return environmentService.initiate(1, basisSubstanceId);
+		int version = 1;
+		Map<String, Object> result = environmentService.initiate(version, basisSubstanceId);
+		if((boolean)result.get("result")){
+			result = environmentService.config(version, basisSubstanceId);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/{basisSubstanceId}/execute", method = RequestMethod.GET)
+	public Map<String, Object> execute(@PathVariable String basisSubstanceId){
+		int version = 1;
+		return environmentService.execute(version, basisSubstanceId);
 	}
 	
 }

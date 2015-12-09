@@ -30,7 +30,16 @@
 	<option value="PUT">PUT</option>
 	<option value="DELETE">DELETE</option>
 </select>
-<button id="doBtn" onclick="doTest();">GO</button>
+<button id="doBtn" onclick="doTest();">GO</button> <button id="hideBtn" onclick="doHide();">UN</button>
+<hr></hr>
+<input id="loginUrl" value="${ctx}/system/doLogin?username=admin&password=admin"><br>
+<button id="loginBtn" onclick="doLogin();">login</button><br>
+<hr></hr>
+<input id="initiateUrl" value="${ctx}/environments/d2ca581c-c436-4fd2-bc7f-cf6084d88937/initiate"><br>
+<button id="doBtn" onclick="doInitiate();">initiate</button><br>
+<hr></hr>
+<input id="executeUrl" value="${ctx}/environments/d2ca581c-c436-4fd2-bc7f-cf6084d88937/execute"><br>
+<button id="doBtn" onclick="doExecute();">xecute</button>
 </body>
 
 <%@include file="/common/footer.jsp"%>
@@ -54,14 +63,13 @@
 					}
 				});
 				
-				html += '<tr><td>URL</td><td><input id="URL" type="text" value="' + ($('#formId').val() == 'HJPZ' ? '/environments' : $('#formId').val() == 'JDPZ' ? '/nodehosts' : '/storageschemes') + '"></td></tr>';
+				html += '<tr><td>URL</td><td><input id="URL" type="text" value="' + ($('#formId').val() == 'HJPZ' ? '${ctx}/environments' : $('#formId').val() == 'JDPZ' ? '${ctx}/nodehosts' : '${ctx}/storageschemes') + '"></td></tr>';
 				$('#testForm tbody').html(html);
 			},
 			error: function(data){
 				
 			}
 		});
-		//$('#' + $('#formId').val()).show();
 	}
 	
 	function doTest(){
@@ -70,7 +78,7 @@
 			type: $('#method').val() == 'GET' ? 'GET' : 'POST',
 			data: $('#testForm').serialize(),
 			success: function(data){
-				if($('#method').val() == 'GET' && $('#testForm #URL').val().split('/').length == 3){
+				if($('#method').val() == 'GET' && $('#testForm #URL').val().split('/').length == 4){
 					$.each($('#testForm input'), function(n, input){
 						for(a in data){
 							if(a == $(input).attr('name')){
@@ -89,5 +97,27 @@
 	$(document).delegate('#doBtn', 'click', function(event){
 		
 	});
+	
+	function doHide(){
+		$('#testForm').toggle(300);
+	}
+	
+	function doInitiate(){
+		$.get($('#initiateUrl').val(), function(data){
+			//alert(data.result + ": \r\n" + data.message);
+		});
+	}
+	
+	function doExecute(){
+		$.get($('#executeUrl').val(), function(data){
+			//alert(data.result + ": \r\n" + data.message);
+		});
+	}
+	
+	function doLogin(){
+		$.post($('#loginUrl').val(), function(data){
+			alert(data);
+		});
+	}
 </script>
 </html>

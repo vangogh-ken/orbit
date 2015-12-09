@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.cc.automate.core.BusinessException;
+import org.cc.automate.utils.SpringSecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -106,7 +107,7 @@ public class ServiceAspect {
 		if (LOG.isInfoEnabled()) {
 			LOG.info("ServiceAspect afterReturn " + joinPoint);
 			LOG.info("ServiceAspect afterReturn Object : " + object);
-
+			LOG.info("用户: {} 完成了 {} 操作", SpringSecurityUtil.getCurrentUserName(), joinPoint.getSignature());
 		}
 
 	}

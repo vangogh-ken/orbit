@@ -26,6 +26,8 @@ public class Constant {
 	public static final String yamlGradeFour = "        ";
 	public static final String wrap = "\r\n";
 	
+	public static final String USER_ID = "USER_ID";
+	public static final String DEFAULT_ENCODING = "UTF-8";
 	/**
 	 * 扫描节点命令路径
 	 */

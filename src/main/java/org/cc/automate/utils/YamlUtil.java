@@ -24,13 +24,10 @@ public class YamlUtil {
 		try {
 			System.out.println(FileUtils.readFileToString(new File("C:\\T\\config_template_v1.sls"), "UTF-8"));
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		//Object o = getMapObject("C:\\T\\config_template_v1.sls", ConfigSLS.class);
 		Iterable<Object> configSLS = YamlUtil.getMapObject("C:\\T\\config_template_v1.sls");
-		
 		Yaml yaml = new Yaml();
 		Node node = yaml.represent(configSLS);
 		try {

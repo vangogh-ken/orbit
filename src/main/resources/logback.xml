@@ -11,7 +11,7 @@
 
     <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/automate.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/orbit.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%date{HH:mm:ss.SSS} %-5level %logger{36}[%file:%line] - %msg%n</pattern>
@@ -21,10 +21,15 @@
     <!-- project default level -->
     <logger name="org.cc" level="info" />
 
-    <logger name="jdbc.sqltiming" level="WARN"/>
-    <logger name="com.mchange" level="ERROR"/>
-    <logger name="org.springframework.web" level="ERROR"/>
-    <logger name="org.springframework.mvc" level="ERROR"/>
+    <logger name="jdbc.sqltiming" level="error"/>
+    <logger name="com.mchange" level="error"/>
+    <logger name="org.springframework.web" level="error"/>
+    <logger name="org.springframework.mvc" level="error"/>
+    <logger name="org.springframework.bean" level="error"/>
+    <logger name="org.springframework.context.support.ResourceBundleMessageSource" level="error"/>
+	<logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
+	<logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
+	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="warn"/>
     
     <root level="WARN">
         <appender-ref ref="console" />

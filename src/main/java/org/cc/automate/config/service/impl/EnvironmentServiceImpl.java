@@ -12,15 +12,21 @@ import org.cc.automate.core.BusinessException;
 import org.cc.automate.core.ConfigLogicHelper;
 import org.cc.automate.core.ConfigTargetHelper;
 import org.cc.automate.core.el.JuelFactory;
+import org.cc.automate.core.sh.SHManager;
+import org.cc.automate.utils.SpringSecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 @Service("environmentService")
 public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements EnvironmentService {
 	@Autowired
+	private SimpMessageSendingOperations messagingTemplate;
+	@Autowired
 	private ConfigLogicHelper configLogicHelper;
 	@Autowired
 	private ConfigTargetHelper configTargetHelper;
+	private SHManager shManager = new SHManager();
 	
 	@Override
 	public Map<String, Object> initiate(int version, String basisSubstanceId) {
@@ -107,6 +113,68 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 		
 		result.put("result", true);
 		result.put("messgae", null);
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> execute(int version, String basisSubstanceId) {
+		if(version == 1){
+			 return executeV1(basisSubstanceId);
+		}
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> executeV1(String basisSubstanceId) {
+		Map<String, Object> environment = getById(basisSubstanceId);
+		//初始化环境
+		boolean flag = true;
+		Map<String, Object> result = null;
+		result = shManager.executeSH("environment");
+		messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+		flag = (boolean)result.get("result");
+		//如果有GLUSTERFS
+		if(flag && "T".equals(environment.get("GLUSTERFS"))){
+			result = shManager.executeSH("GLUSTERFS");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag && "T".equals(environment.get("OCFS2"))){
+			result = shManager.executeSH("OCFS2");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag && "T".equals(environment.get("CEPH"))){
+			result = shManager.executeSH("CEPH");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag && "T".equals(environment.get("KVM"))){
+			result = shManager.executeSH("KVM");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag && "T".equals(environment.get("IRONIC"))){
+			result = shManager.executeSH("IRONIC");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag && "T".equals(environment.get("VMWARE"))){
+			result = shManager.executeSH("VMWARE");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
+		
+		if(flag){
+			result = shManager.executeSH("NEBULA4J");
+			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
+			flag = (boolean)result.get("result");
+		}
 		return result;
 	}
 }

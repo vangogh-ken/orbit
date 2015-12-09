@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.cc.automate.core.CP_InitializingInterceptor;
 import org.cc.automate.core.CP_PropertyEditorRegistrar;
 import org.cc.automate.core.CP_SimpleMappingExceptionResolver;
+import org.cc.automate.core.ws.WebsocketMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -59,6 +60,14 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         return viewResolver;
     }
     
+    /**
+     * websocket bean
+     * @return
+     */
+    @Bean
+    public WebsocketMessageHandler websocketMessageHandler(){
+    	return new WebsocketMessageHandler();
+    }
     /**                                                          
     * 描述 : <注册消息资源处理器>. <br> 
     *<p> 

@@ -156,92 +156,6 @@
 		</div>
 	</div>
 	
-	<!--  
-	<div class="modal fade" id="basisApplicationModal" aria-hidden="true">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-				<h4 class="modal-title">应用</h4>
-			</div>
-			<div class="modal-body">
-				<article class="m-widget">
-				<form id="basisApplicationToAddForm" method="post" class="m-form-blank"></form>
-				</article>
-			
-				<article class="m-widget">
-					<form id="basisApplicationBtnForm" name="basisApplicationBtnForm" method="post" action="" class="form-inline" onsubmit="return false;">
-						<button type="button" class="btn btn-sm red" onclick="$('#basisApplicationToAddForm').submit()">确定</button>
-						<button type="button" class="btn btn-sm red" onclick="reviseBasisApplication();">修改</button>
-						<button type="button" class="btn btn-sm green" onclick="deleteBasisApplication();">删除</button>
-					</form>
-				</article>
-				<article class="m-widget" style="max-height:300px;overflow-y: scroll;">
-				<form id="basisApplicationHasAddForm" action="" method="post" class="m-form-blank" ></form>
-				</article>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-sm default" data-dismiss="modal">关闭</button>
-			</div>
-		</div>
-	</div>
-	
-	<div class="modal fade" id="basisStatusModal" aria-hidden="true">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-				<h4 class="modal-title">状态</h4>
-			</div>
-			<div class="modal-body">
-				<article class="m-widget">
-				<form id="basisStatusToAddForm" method="post" class="m-form-blank"></form>
-				</article>
-			
-				<article class="m-widget">
-					<form id="basisStatusBtnForm" name="basisStatusBtnForm" method="post" action="" class="form-inline" onsubmit="return false;">
-						<button type="button" class="btn btn-sm red" onclick="$('#basisStatusToAddForm').submit()">确定</button>
-						<button type="button" class="btn btn-sm red" onclick="reviseBasisStatus();">修改</button>
-						<button type="button" class="btn btn-sm green" onclick="deleteBasisStatus();">删除</button>
-					</form>
-				</article>
-				<article class="m-widget" style="max-height:300px;overflow-y: scroll;">
-				<form id="basisStatusHasAddForm" action="" method="post" class="m-form-blank" ></form>
-				</article>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-sm default" data-dismiss="modal">关闭</button>
-			</div>
-		</div>
-	</div>
-	
-	
-	<div class="modal fade" id="basisSchemaModal" aria-hidden="true">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-				<h4 class="modal-title">界面</h4>
-			</div>
-			<div class="modal-body">
-				<article class="m-widget">
-				<form id="basisSchemaToAddForm" method="post" class="m-form-blank"></form>
-				</article>
-			
-				<article class="m-widget">
-					<form id="basisSchemaBtnForm" name="basisSchemaBtnForm" method="post" action="" class="form-inline" onsubmit="return false;">
-						<button type="button" class="btn btn-sm red" onclick="$('#basisSchemaToAddForm').submit()">确定</button>
-						<button type="button" class="btn btn-sm red" onclick="reviseBasisSchema();">修改</button>
-						<button type="button" class="btn btn-sm green" onclick="deleteBasisSchema();">删除</button>
-					</form>
-				</article>
-				<article class="m-widget" style="max-height:300px;overflow-y: scroll;">
-				<form id="basisSchemaHasAddForm" action="" method="post" class="m-form-blank" ></form>
-				</article>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-sm default" data-dismiss="modal">关闭</button>
-			</div>
-		</div>
-	</div>
-	-->
 	<%@include file="/common/footer.jsp"%>
 	<script type="text/javascript">
 	$(function() {
@@ -314,7 +228,6 @@
 						var html = '<input id="basisSubstanceTypeId" type="hidden" value="' + basisSubstanceTypeId + '">';
 						html += '<input id="basisAttributeId" type="hidden" value="">';
 						html += '<table class="m-table table-bordered table-hover">';
-						//html += '<thead><tr><th>字段名</th><th>字段库</th><th>字段类型</th><th>是否必须</th><th>是否可选</th><th>词典属性</th><th>词典类型</th><th>词典字段</th><th>词典过滤</th><th>顺序</th></tr></thead><tbody>';
 						html += '<thead><tr><th>字段名</th><th>字段库</th><th>字段类型</th><th>是否必须</th><th>顺序</th></tr></thead><tbody>';
 						html += '<tr><td><input id="attributeName" name="attributeName" value="" class="form-control required"></td>';
 						html += '<td><input id="attributeColumn" name="attributeColumn" value="" class="form-control required"></td>';
@@ -325,16 +238,6 @@
 						html += '<td><select id="required" name="required" class="form-control required" >';
 						html += '<option value="T">是</option><option value="F">否</option>';
 						html += '</select></td>';
-						/**
-						html += '<td><select id="canSelect" name="canSelect" class="form-control required" >';
-						html += '<option value="T">是</option><option value="F">否</option>';
-						html += '</select></td>';
-						html += '<td><input id="vAttrId" name="vAttrId" value="" class="form-control"></td>';
-						html += '<td><input id="vClsId" name="vClsId" value="" class="form-control"></td>';
-						html += '<td><input id="vColumn" name="vColumn" value="" class="form-control"></td>';
-						html += '<td><input id="vFilterId" name="vFilterId" value="" class="form-control"></td>';
-						**/
-						//var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[hasAddData.length -1].displayIndex + 1);
 						var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[0].displayIndex + 1);
 						html += '<td><input id="displayIndex" name="displayIndex" value="' + displayIndex + '" class="form-control required number"></td>';
 						html += '</tr>'
@@ -344,7 +247,6 @@
 						$('#basisAttributeToAddForm').html(html);
 						html = '<table class="m-table table-bordered table-hover">';
 						html += '<thead><tr><th width="10" class="m-table-check"><input type="checkbox" class="selectedItemIdAll"/></th>';
-						//html += '<th>字段名</th><th>字段库</th><th>字段类型</th><th>是否必须</th><th>是否可选</th><th>词典属性</th><th>词典类型</th><th>词典字段</th><th>词典过滤</th><th>顺序</th></tr></thead><tbody>';
 						html += '<th>字段名</th><th>字段库</th><th>字段类型</th><th>是否必须</th><th>顺序</th></tr></thead><tbody>';
 						$.each(hasAddData, function(i, item){
 							html += '<tr><td><input class="selectedItemId a-check" name="basisAttributeId" type="checkbox" value="'+item.id+'" /></td>';
@@ -352,13 +254,6 @@
 							html += '<td>' + item.attributeColumn + '</td>';
 							html += '<td>' + item.attributeType + '</td>';
 							html += '<td>' + item.required + '</td>';
-							/**
-							html += '<td>' + item.canSelect + '</td>';
-							html += '<td>' + item.vAttrId + '</td>';
-							html += '<td>' + item.vClsId + '</td>';
-							html += '<td>' + item.vColumn + '</td>';
-							html += '<td>' + item.vFilterId + '</td>';
-							**/
 							html += '<td>' + item.displayIndex + '</td></tr>';
 						});
 						html += "</tbody></table>";

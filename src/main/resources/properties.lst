@@ -1,0 +1,2 @@
+classpath:/config/properties/db.properties
+classpath:/config/properties/path.properties
