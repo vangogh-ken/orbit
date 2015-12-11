@@ -59,11 +59,12 @@ public class BasisSqlHelper {
 		String sql = null;
 		if(basisAttributes.size() > limitSize){
 			List<String> sqls =  new ArrayList<String>();
-			int len = basisAttributes.size()%limitSize == 0 ? (basisAttributes.size()%limitSize) : ((basisAttributes.size() - basisAttributes.size()%limitSize)/limitSize + 1);
-			for(int i=0; i<len; i++){
-				sqls.add(getSubSql(basisAttributes.subList(i * limitSize, (i + 1) == len ? basisAttributes.size() - 1  : ((i + 1) * limitSize) - 1)));
+			int size = basisAttributes.size();
+			int count = size%limitSize == 0 ? (size/limitSize) : ((size - size%limitSize)/limitSize + 1);
+			for(int i=0; i<count; i++){
+				sqls.add(getSubSql(basisAttributes.subList(i * limitSize, (i + 1) == count ? size  : ((i + 1) * limitSize))));
 			}
-			sql = getSumSql(filterText, sqls.toArray(new String[len]));
+			sql = getSumSql(filterText, sqls.toArray(new String[count]));
 		}else{
 			sql = getSumSql(filterText, getSubSql(basisAttributes));
 		}
@@ -100,6 +101,7 @@ public class BasisSqlHelper {
 	 * @return
 	 */
 	public String getSubSql(List<BasisAttribute> basisAttributes){
+		LOG.info("本次处理的属性数量为 {}", basisAttributes.size());
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT " + basisAttributes.get(0).getAttributeColumn() + ".BASIS_SUBSTANCE_ID");
 		for(BasisAttribute basisAttribute : basisAttributes){
@@ -139,6 +141,7 @@ public class BasisSqlHelper {
 		}
 		
 		sql.delete(sql.lastIndexOf(" LEFT JOIN "), sql.length());
+		System.out.println(sql.toString());
 		return sql.toString();
 	}
 }

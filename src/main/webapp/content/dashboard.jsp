@@ -35,11 +35,11 @@
 <input id="loginUrl" value="${ctx}/system/doLogin?username=admin&password=admin"><br>
 <button id="loginBtn" onclick="doLogin();">login</button><br>
 <hr></hr>
-<input id="initiateUrl" value="${ctx}/environments/d2ca581c-c436-4fd2-bc7f-cf6084d88937/initiate"><br>
+<input id="initiateUrl" value="${ctx}/environments/6c7c7950-c73c-4c5a-9ea7-fe2a12c69f49/initiate"><br>
 <button id="doBtn" onclick="doInitiate();">initiate</button><br>
 <hr></hr>
-<input id="executeUrl" value="${ctx}/environments/d2ca581c-c436-4fd2-bc7f-cf6084d88937/execute"><br>
-<button id="doBtn" onclick="doExecute();">xecute</button>
+<input id="executeUrl" value="${ctx}/environments/6c7c7950-c73c-4c5a-9ea7-fe2a12c69f49/execute"><br>
+<button id="doBtn" onclick="doExecute();">execute</button>
 </body>
 
 <%@include file="/common/footer.jsp"%>
@@ -110,7 +110,7 @@
 	
 	function doExecute(){
 		$.get($('#executeUrl').val(), function(data){
-			//alert(data.result + ": \r\n" + data.message);
+			alert(data.result + ": \r\n" + data.message);
 		});
 	}
 	

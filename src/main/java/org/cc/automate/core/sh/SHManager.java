@@ -10,6 +10,9 @@ import org.cc.automate.core.CP_SpringContext;
 import org.cc.automate.core.PropertiesFactory;
 import org.cc.automate.utils.ShellUtil;
 import org.cc.automate.utils.StringUtil;
+import org.chinacloud.command.CmdDTO;
+import org.chinacloud.command.Command;
+import org.chinacloud.command.SimpleCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +40,16 @@ public class SHManager {
 	}
 	
 	public Map<String, Object> executeSH(String type){
+		Map<String, Object> result = new HashMap<String, Object>();
 		String shPath = shPathStore.get(type);
 		if(!StringUtil.isNullOrEmpty(shPath)){
-			List<String> texts = ShellUtil.executeSH(shPath);
-			System.out.println(texts.toArray(new String[texts.size()]));
+			SimpleCmd simpleCmd = new SimpleCmd(new CmdDTO(Command.Type.DEFALUT, shPath));
+			String text = simpleCmd.execute();//执行脚本返回结果
+			/*List<String> texts = ShellUtil.executeSH(shPath);*/
+			System.out.println(text);
+			result.put("message", type + "：　" +text);
 		}
-		
-		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("result", true);
-		result.put("message", type);
 		return result;
 	}
 }

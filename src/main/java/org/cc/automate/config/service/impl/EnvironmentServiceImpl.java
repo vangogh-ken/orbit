@@ -127,10 +127,21 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 	@Override
 	public Map<String, Object> executeV1(String basisSubstanceId) {
 		Map<String, Object> environment = getById(basisSubstanceId);
+		
 		//初始化环境
 		boolean flag = true;
-		Map<String, Object> result = null;
-		result = shManager.executeSH("environment");
+		String message = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		if(!"T".equals(environment.get("SFYTGJY"))){
+			flag = false;
+			message = "未通过校验不能执行部署";
+			result.put("message", message);
+			result.put("result", flag);
+			return result;
+		}
+		
+		result = shManager.executeSH("ENVIRONMENT");
 		messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
 		flag = (boolean)result.get("result");
 		//如果有GLUSTERFS
@@ -152,19 +163,19 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 			flag = (boolean)result.get("result");
 		}
 		
-		if(flag && "T".equals(environment.get("KVM"))){
+		if(flag && "T".equals(environment.get("XNHLX_KVM"))){
 			result = shManager.executeSH("KVM");
 			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
 			flag = (boolean)result.get("result");
 		}
 		
-		if(flag && "T".equals(environment.get("IRONIC"))){
+		if(flag && "T".equals(environment.get("XNHLX_IRONIC"))){
 			result = shManager.executeSH("IRONIC");
 			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
 			flag = (boolean)result.get("result");
 		}
 		
-		if(flag && "T".equals(environment.get("VMWARE"))){
+		if(flag && "T".equals(environment.get("XNHLX_VMWARE"))){
 			result = shManager.executeSH("VMWARE");
 			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
 			flag = (boolean)result.get("result");

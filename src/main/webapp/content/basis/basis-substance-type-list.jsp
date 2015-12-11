@@ -141,7 +141,9 @@
 				<article class="m-widget">
 					<form id="basisAttributeBtnForm" name="basisAttributeBtnForm" method="post" action="" class="form-inline" onsubmit="return false;">
 						<button type="button" class="btn btn-sm red" onclick="$('#basisAttributeToAddForm').submit()">添加</button>
+						<!--  
 						<button type="button" class="btn btn-sm red" onclick="batchBasisAttribute();">批量</button>
+						-->
 						<button type="button" class="btn btn-sm red" onclick="reviseBasisAttribute();">修改</button>
 						<button type="button" class="btn btn-sm green" onclick="deleteBasisAttribute();">删除</button>
 					</form>
@@ -219,7 +221,7 @@
 				return false;
 			}else{
 				$.ajax({
-					url:'basis-attribute-to-add-attribute?basisSubstanceTypeId=' + basisSubstanceTypeId,
+					url:'${ctx}/basis/basis-attribute-to-add-attribute?basisSubstanceTypeId=' + basisSubstanceTypeId,
 					type:'post',
 					dataType:'json',
 					async:true,
@@ -241,9 +243,11 @@
 						var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[0].displayIndex + 1);
 						html += '<td><input id="displayIndex" name="displayIndex" value="' + displayIndex + '" class="form-control required number"></td>';
 						html += '</tr>'
-						html += '<tr><td>批量添加数</td><td><input id="batchCount" value="1" class="form-control number"></td>';
-						html += '<td>批量起始数</td><td><input id="batchStart" value="0" class="form-control number"></td>';
-						html += '<td>批量终止数</td><td><input id="batchEnd" value="0" class="form-control number"></td></tr>';
+						
+						//html += '<tr><td>批量添加数</td><td><input id="batchCount" value="1" class="form-control number"></td>';
+						//html += '<td>批量起始数</td><td><input id="batchStart" value="0" class="form-control number"></td>';
+						//html += '<td>批量终止数</td><td><input id="batchEnd" value="0" class="form-control number"></td></tr>';
+						
 						$('#basisAttributeToAddForm').html(html);
 						html = '<table class="m-table table-bordered table-hover">';
 						html += '<thead><tr><th width="10" class="m-table-check"><input type="checkbox" class="selectedItemIdAll"/></th>';
@@ -273,7 +277,7 @@
 			return false;
 		}else{
 			var basisAttributeId = $('#basisAttributeHasAddForm .selectedItemId:checked').val();
-			var url = 'basis-attribute-to-revise-attribute?basisAttributeId=' + basisAttributeId;
+			var url = '${ctx}/basis/basis-attribute-to-revise-attribute?basisAttributeId=' + basisAttributeId;
 			$.post(url, function(data){
 				var basisAttribute = data.basisAttribute;
 				$('#basisAttributeToAddForm #basisAttributeId').val(basisAttribute.id);
@@ -299,7 +303,7 @@
 	    			return false;
 				}
 				var data = toJsonString('basisAttributeToAddForm');
-				var url = 'basis-attribute-done-add-attribute?basisSubstanceTypeId=' + basisSubstanceTypeId + '&basisAttributeId=' + basisAttributeId;
+				var url = '${ctx}/basis/basis-attribute-done-add-attribute?basisSubstanceTypeId=' + basisSubstanceTypeId + '&basisAttributeId=' + basisAttributeId;
 				$.ajax({
 	    			type: 'POST',
 	    			data: data,
@@ -314,7 +318,7 @@
 	        rules: {
 	        	attributeName: {
    	                remote: {
-   	                    url: 'basis-attribute-check-attributename.do',
+   	                    url: '${ctx}/basis/basis-attribute-check-attributename.do',
    	                    data: {
    	                    	basisSubstanceTypeId: function() {
    	                            return $('#basisAttributeToAddForm #basisSubstanceTypeId').val();
@@ -327,7 +331,7 @@
    	            },
    	         attributeColumn: {
 	                remote: {
-	                    url: 'basis-attribute-check-attributecolumn.do',
+	                    url: '${ctx}/basis/basis-attribute-check-attributecolumn.do',
 	                    data: {
 	                    	basisSubstanceTypeId: function() {
    	                            return $('#basisAttributeToAddForm #basisSubstanceTypeId').val();
@@ -350,7 +354,7 @@
 		});
 	});
 	function deleteBasisAttribute(){
-		var url = 'basis-attribute-done-remove-attribute?';
+		var url = '${ctx}/basis/basis-attribute-done-remove-attribute?';
 		if($('#basisAttributeHasAddForm .selectedItemId:checked').length == 0){
 			alert('请选择数据！');
 			return false;
@@ -375,7 +379,7 @@
 			return false;
 		}
 		var data = toJsonString('basisAttributeToAddForm');
-		var url = 'basis-attribute-done-add-batch?basisSubstanceTypeId=' + basisSubstanceTypeId + '&batchCount=' + batchCount + '&batchStart=' + batchStart + '&batchEnd=' + batchEnd;
+		var url = '${ctx}/basis/basis-attribute-done-add-batch?basisSubstanceTypeId=' + basisSubstanceTypeId + '&batchCount=' + batchCount + '&batchStart=' + batchStart + '&batchEnd=' + batchEnd;
 		$.ajax({
 			type: 'POST',
 			data: data,
@@ -387,423 +391,6 @@
 		});
 	}
 	
-////////////////////////////////////应用
-	$(document).delegate('#addBasisApplication', 'click',function(e){
-		if(addBasisApplication()){
-			var margin = (window.screen.availWidth - 1200)/2;
-			$('#basisApplicationModal').css("margin-left", margin);
-			$('#basisApplicationModal').css("width","1200px");
-			$('#basisApplicationModal').modal();
-		}
-	});
-	
-	function addBasisApplication(){
-		if($('.selectedItem:checked').length != 1){
-			alert('请选择一条数据!');
-			return false;
-		}else{
-			var basisSubstanceTypeId = $('.selectedItem:checked').val();
-			var status = $('#' + basisSubstanceTypeId + 'status').text();
-			if(status != '已启用'){
-				alert('已禁用的动作不能做任何操作！');
-				return false;
-			}else{
-				$.ajax({
-					url:'basis-application-to-add-application.do?basisSubstanceTypeId=' + basisSubstanceTypeId,
-					type:'post',
-					dataType:'json',
-					async:true,
-					success:function(data){
-						var hasAddData = data.hasAddData;
-						var html = '<input id="basisSubstanceTypeId" type="hidden" value="' + basisSubstanceTypeId + '">';
-						html += '<input id="basisApplicationId" type="hidden" value="">';
-						html += '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th>应用名称</th><th>是否只读</th><th>数据过滤</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						html += '<tr><td><input id="applicationName" name="applicationName" value="" class="form-control required"></td>';
-						html += '<td><select id="readonly" name="readonly" class="form-control required" >';
-						html += '<option value="T">是</option><option value="F">否</option>';
-						html += '</select></td>';
-						
-						html += '<td><input id="filterText" name="filterText" value="" class="form-control"></td>';
-						
-						html += '<td><select id="status" name="status" class="form-control required" >';
-						html += '<option value="T">是</option><option value="F">否</option>';
-						html += '</select></td>';
-						var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[hasAddData.length -1].displayIndex + 1);
-						html += '<td><input id="displayIndex" name="displayIndex" value="' + displayIndex + '" class="form-control required number"></td>';
-						html += '</tr>'
-						$('#basisApplicationToAddForm').html(html);
-						html = '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th width="10" class="m-table-check"><input type="checkbox" class="selectedItemIdAll"/></th>';
-						html += '<th>应用名称</th><th>是否只读</th><th>数据过滤</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						$.each(hasAddData, function(i, item){
-							html += '<tr><td><input class="selectedItemId a-check" name="basisApplicationId" type="checkbox" value="'+item.id+'" /></td>';
-							html += '<td>' + item.applicationName + '</td>';
-							html += '<td>' + item.readonly + '</td>';
-							html += '<td>' + item.filterText + '</td>';
-							html += '<td>' + item.status + '</td>';
-							html += '<td>' + item.displayIndex + '</td></tr>';
-						});
-						html += "</tbody></table>";
-						$('#basisApplicationHasAddForm').html(html);
-					},
-					error:function(){
-					}
-				});
-				return true;
-			}
-		}
-	}
-	function reviseBasisApplication(){
-		if($('#basisApplicationHasAddForm .selectedItemId:checked').length != 1){
-			alert('请选择一条数据！');
-			return false;
-		}else{
-			var basisApplicationId = $('#basisApplicationHasAddForm .selectedItemId:checked').val();
-			var url = 'basis-application-to-revise-application.do?basisApplicationId=' + basisApplicationId;
-			$.post(url, function(data){
-				var basisApplication = data.basisApplication;
-				$('#basisApplicationToAddForm #basisApplicationId').val(basisApplication.id);
-				$('#basisApplicationToAddForm #applicationName').val(basisApplication.applicationName);
-				$('#basisApplicationToAddForm #readonly').val(basisApplication.readonly);
-				$('#basisApplicationToAddForm #filterText').val(basisApplication.filterText);
-				$('#basisApplicationToAddForm #status').val(basisApplication.status);
-				$('#basisApplicationToAddForm #displayIndex').val(basisApplication.displayIndex);
-			});
-		}
-	}
-	$(function() {
-		$("#basisApplicationToAddForm").validate({
-	        submitHandler: function(form) {
-				var basisSubstanceTypeId = $('#basisApplicationToAddForm #basisSubstanceTypeId').val();
-				var basisApplicationId = $('#basisApplicationToAddForm #basisApplicationId').val();//修改单条费用时使用
-				if(basisSubstanceTypeId == undefined || basisSubstanceTypeId == ''){
-	    			alert('请重新操作!');
-	    			return false;
-				}
-				var data = toJsonString('basisApplicationToAddForm');
-				var url = 'basis-application-done-add-application.do?basisSubstanceTypeId=' + basisSubstanceTypeId + '&basisApplicationId=' + basisApplicationId;
-				$.ajax({
-	    			type: 'POST',
-	    			data: data,
-	    			url: url,
-	    			contentType: 'application/json',
-	    			success:function(data){
-	    				addBasisApplication();
-	    			}
-	    		});
-	        },
-	        errorClass: 'validate-error',
-	        rules: {
-	        	applicationName: {
-   	                remote: {
-   	                    url: 'basis-application-check-applicationname.do',
-   	                    data: {
-   	                    	basisSubstanceTypeId: function() {
-   	                            return $('#basisApplicationToAddForm #basisSubstanceTypeId').val();
-   	                        },
-   	                        id: function() {
-   	                            return $('#basisApplicationToAddForm #basisApplicationId').val();
-   	                        }
-   	                    }
-   	                }
-   	            }
-   	        },
-   	        messages: {
-   	        	applicationName: {
-   	                remote: "存在重复"
-   	            }
-   	        }
-		});
-	});
-	function deleteBasisApplication(){
-		var url = 'basis-application-done-remove-application.do?';
-		if($('#basisApplicationHasAddForm .selectedItemId:checked').length == 0){
-			alert('请选择数据！');
-			return false;
-		}else{
-			$.post(url, $('#basisApplicationHasAddForm').serialize(),  function(data){
-				if(data == 'success'){
-					addBasisApplication();
-				}else{
-					alert('删除失败！');
-				}
-			});
-		}
-	}
-	
-////////////////////////////////////状态
-	$(document).delegate('#addBasisStatus', 'click',function(e){
-		if(addBasisStatus()){
-			var margin = (window.screen.availWidth - 1200)/2;
-			$('#basisStatusModal').css("margin-left", margin);
-			$('#basisStatusModal').css("width","1200px");
-			$('#basisStatusModal').modal();
-		}
-	});
-	
-	function addBasisStatus(){
-		if($('.selectedItem:checked').length != 1){
-			alert('请选择一条数据!');
-			return false;
-		}else{
-			var basisSubstanceTypeId = $('.selectedItem:checked').val();
-			var status = $('#' + basisSubstanceTypeId + 'status').text();
-			if(status != '已启用'){
-				alert('已禁用的动作不能做任何操作！');
-				return false;
-			}else{
-				$.ajax({
-					url:'basis-status-to-add-status.do?basisSubstanceTypeId=' + basisSubstanceTypeId,
-					type:'post',
-					dataType:'json',
-					async:true,
-					success:function(data){
-						var hasAddData = data.hasAddData;
-						var html = '<input id="basisSubstanceTypeId" type="hidden" value="' + basisSubstanceTypeId + '">';
-						html += '<input id="basisStatusId" type="hidden" value="">';
-						html += '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th>状态名称</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						html += '<tr><td><input id="statusText" name="statusText" value="" class="form-control required"></td>';
-						html += '<td><select id="status" name="status" class="form-control required" >';
-						html += '<option value="T">是</option><option value="F">否</option>';
-						html += '</select></td>';
-						var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[hasAddData.length -1].displayIndex + 1);
-						html += '<td><input id="displayIndex" name="displayIndex" value="' + displayIndex + '" class="form-control required number"></td>';
-						html += '</tr>'
-						$('#basisStatusToAddForm').html(html);
-						
-						html = '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th width="10" class="m-table-check"><input type="checkbox" class="selectedItemIdAll"/></th>';
-						html += '<th>状态名称</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						$.each(hasAddData, function(i, item){
-							html += '<tr><td><input class="selectedItemId a-check" name="basisStatusId" type="checkbox" value="'+item.id+'" /></td>';
-							html += '<td>' + item.statusText + '</td>';
-							html += '<td>' + item.status + '</td>';
-							html += '<td>' + item.displayIndex + '</td></tr>';
-						});
-						html += "</tbody></table>";
-						$('#basisStatusHasAddForm').html(html);
-					},
-					error:function(){
-					}
-				});
-				return true;
-			}
-		}
-	}
-	function reviseBasisStatus(){
-		if($('#basisStatusHasAddForm .selectedItemId:checked').length != 1){
-			alert('请选择一条数据！');
-			return false;
-		}else{
-			var basisStatusId = $('#basisStatusHasAddForm .selectedItemId:checked').val();
-			var url = 'basis-status-to-revise-status.do?basisStatusId=' + basisStatusId;
-			$.post(url, function(data){
-				var basisStatus = data.basisStatus;
-				$('#basisStatusToAddForm #basisStatusId').val(basisStatus.id);
-				$('#basisStatusToAddForm #statusText').val(basisStatus.statusText);
-				$('#basisStatusToAddForm #status').val(basisStatus.status);
-				$('#basisStatusToAddForm #displayIndex').val(basisStatus.displayIndex);
-			});
-		}
-	}
-	$(function() {
-		$("#basisStatusToAddForm").validate({
-	        submitHandler: function(form) {
-				var basisSubstanceTypeId = $('#basisStatusToAddForm #basisSubstanceTypeId').val();
-				var basisStatusId = $('#basisStatusToAddForm #basisStatusId').val();//修改单条费用时使用
-				if(basisSubstanceTypeId == undefined || basisSubstanceTypeId == ''){
-	    			alert('请重新操作!');
-	    			return false;
-				}
-				var data = toJsonString('basisStatusToAddForm');
-				var url = 'basis-status-done-add-status.do?basisSubstanceTypeId=' + basisSubstanceTypeId + '&basisStatusId=' + basisStatusId;
-				$.ajax({
-	    			type: 'POST',
-	    			data: data,
-	    			url: url,
-	    			contentType: 'application/json',
-	    			success:function(data){
-	    				addBasisStatus();
-	    			}
-	    		});
-	        },
-	        errorClass: 'validate-error',
-	        rules: {
-	        	statusText: {
-   	                remote: {
-   	                    url: 'basis-status-check-statustext.do',
-   	                    data: {
-   	                    	basisSubstanceTypeId: function() {
-   	                            return $('#basisStatusToAddForm #basisSubstanceTypeId').val();
-   	                        },
-   	                        id: function() {
-   	                            return $('#basisStatusToAddForm #basisStatusId').val();
-   	                        }
-   	                    }
-   	                }
-   	            }
-   	        },
-   	        messages: {
-   	        	statusText: {
-   	                remote: "存在重复"
-   	            }
-   	        }
-		});
-	});
-	function deleteBasisStatus(){
-		var url = 'basis-status-done-remove-status.do?';
-		if($('#basisStatusHasAddForm .selectedItemId:checked').length == 0){
-			alert('请选择数据！');
-			return false;
-		}else{
-			$.post(url, $('#basisStatusHasAddForm').serialize(),  function(data){
-				if(data == 'success'){
-					addBasisStatus();
-				}else{
-					alert('删除失败！');
-				}
-			});
-		}
-	}
-	
-	
-////////////////////////////////////界面
-	$(document).delegate('#addBasisSchema', 'click',function(e){
-		if(addBasisSchema()){
-			var margin = (window.screen.availWidth - 1200)/2;
-			$('#basisSchemaModal').css("margin-left", margin);
-			$('#basisSchemaModal').css("width","1200px");
-			$('#basisSchemaModal').modal();
-		}
-	});
-	
-	function addBasisSchema(){
-		if($('.selectedItem:checked').length != 1){
-			alert('请选择一条数据!');
-			return false;
-		}else{
-			var basisSubstanceTypeId = $('.selectedItem:checked').val();
-			var status = $('#' + basisSubstanceTypeId + 'status').text();
-			if(status != '已启用'){
-				alert('已禁用的动作不能做任何操作！');
-				return false;
-			}else{
-				$.ajax({
-					url:'basis-schema-to-add-schema.do?basisSubstanceTypeId=' + basisSubstanceTypeId,
-					type:'post',
-					dataType:'json',
-					async:true,
-					success:function(data){
-						var hasAddData = data.hasAddData;
-						var html = '<input id="basisSubstanceTypeId" type="hidden" value="' + basisSubstanceTypeId + '">';
-						html += '<input id="basisSchemaId" type="hidden" value="">';
-						html += '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th>界面名称</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						html += '<tr><td><input id="schemaName" name="schemaName" value="" class="form-control required"></td>';
-						html += '<td><select id="status" name="status" class="form-control required" >';
-						html += '<option value="T">是</option><option value="F">否</option>';
-						html += '</select></td>';
-						var displayIndex = (hasAddData == null || hasAddData.length == 0) ? 1 : (hasAddData[hasAddData.length -1].displayIndex + 1);
-						html += '<td><input id="displayIndex" name="displayIndex" value="' + displayIndex + '" class="form-control required number"></td>';
-						html += '</tr>'
-						$('#basisSchemaToAddForm').html(html);
-						html = '<table class="m-table table-bordered table-hover">';
-						html += '<thead><tr><th width="10" class="m-table-check"><input type="checkbox" class="selectedItemIdAll"/></th>';
-						html += '<th>界面名称</th><th>状态</th><th>顺序</th></tr></thead><tbody>';
-						$.each(hasAddData, function(i, item){
-							html += '<tr><td><input class="selectedItemId a-check" name="basisSchemaId" type="checkbox" value="'+item.id+'" /></td>';
-							html += '<td>' + item.schemaName + '</td>';
-							html += '<td>' + item.status + '</td>';
-							html += '<td>' + item.displayIndex + '</td></tr>';
-						});
-						html += "</tbody></table>";
-						$('#basisSchemaHasAddForm').html(html);
-					},
-					error:function(){
-					}
-				});
-				return true;
-			}
-		}
-	}
-	//修改字段
-	function reviseBasisSchema(){
-		if($('#basisSchemaHasAddForm .selectedItemId:checked').length != 1){
-			alert('请选择一条数据！');
-			return false;
-		}else{
-			var basisSchemaId = $('#basisSchemaHasAddForm .selectedItemId:checked').val();
-			var url = 'basis-schema-to-revise-schema.do?basisSchemaId=' + basisSchemaId;
-			$.post(url, function(data){
-				var basisSchema = data.basisSchema;
-				$('#basisSchemaToAddForm #basisSchemaId').val(basisSchema.id);
-				$('#basisSchemaToAddForm #schemaName').val(basisSchema.schemaName);
-				$('#basisSchemaToAddForm #status').val(basisSchema.status);
-				$('#basisSchemaToAddForm #displayIndex').val(basisSchema.displayIndex);
-			});
-		}
-	}
-	$(function() {
-		$("#basisSchemaToAddForm").validate({
-	        submitHandler: function(form) {
-				var basisSubstanceTypeId = $('#basisSchemaToAddForm #basisSubstanceTypeId').val();
-				var basisSchemaId = $('#basisSchemaToAddForm #basisSchemaId').val();//修改单条费用时使用
-				if(basisSubstanceTypeId == undefined || basisSubstanceTypeId == ''){
-	    			alert('请重新操作!');
-	    			return false;
-				}
-				var data = toJsonString('basisSchemaToAddForm');
-				var url = 'basis-schema-done-add-schema.do?basisSubstanceTypeId=' + basisSubstanceTypeId + '&basisSchemaId=' + basisSchemaId;
-				$.ajax({
-	    			type: 'POST',
-	    			data: data,
-	    			url: url,
-	    			contentType: 'application/json',
-	    			success:function(data){
-	    				addBasisSchema();
-	    			}
-	    		});
-	        },
-	        errorClass: 'validate-error',
-	        rules: {
-	        	schemaName: {
-   	                remote: {
-   	                    url: 'basis-schema-check-schemaname.do',
-   	                    data: {
-   	                    	basisSubstanceTypeId: function() {
-   	                            return $('#basisSchemaToAddForm #basisSubstanceTypeId').val();
-   	                        },
-   	                        id: function() {
-   	                            return $('#basisSchemaToAddForm #basisSchemaId').val();
-   	                        }
-   	                    }
-   	                }
-   	            }
-   	        },
-   	        messages: {
-   	        	schemaName: {
-   	                remote: "存在重复"
-   	            }
-   	        }
-		});
-	});
-	function deleteBasisSchema(){
-		var url = 'basis-schema-done-remove-schema.do?';
-		if($('#basisSchemaHasAddForm .selectedItemId:checked').length == 0){
-			alert('请选择数据！');
-			return false;
-		}else{
-			$.post(url, $('#basisSchemaHasAddForm').serialize(),  function(data){
-				if(data == 'success'){
-					addBasisSchema();
-				}else{
-					alert('删除失败！');
-				}
-			});
-		}
-	}
 	//拼接成json数据类型
 	function toJsonString(formId){
 		var fields = $('#' + formId).serializeArray();
@@ -835,7 +422,6 @@
    			}
 		});
 		data += '}]';
-		
 		return data;
 	}
 	
