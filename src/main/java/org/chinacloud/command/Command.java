@@ -23,16 +23,16 @@ public abstract class Command<T> {
 		return null;
 	}
 	
-	abstract void build();
+	public abstract void build();
 	
-	abstract CmdDTO getCmd();
+	public abstract CmdDTO getCmd();
 	
-	abstract CmdTask<T> getTask();
+	public abstract CmdTask<T> getTask();
 	
-	Type getCmdType(){
+	public Type getCmdType(){
 		return getCmd().getCommandType();
 	}
-	void setCmdType(Type type){
+	public void setCmdType(Type type){
 		getCmd().setCommandType(type);
 	}
 }

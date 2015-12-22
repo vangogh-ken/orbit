@@ -15,40 +15,22 @@ import org.springframework.stereotype.Component;
 public class BasisSqlHelper {
 	private static Logger LOG = LoggerFactory.getLogger(BasisSqlHelper.class);
 	
-	public String getSqlOfBasisSubstanceWithEqual(List<BasisAttribute> basisAttributes, Map<String, String> params){
-		StringBuilder filterText = new StringBuilder();
-		if(params != null && !params.isEmpty()){
-			for(Entry<String, String> entry : params.entrySet()){
-				if(StringUtil.isNullOrEmpty(entry.getValue())){
-					continue;
-				}
-				filterText.append(" " + entry.getKey() + " = '" + entry.getValue() + "' AND ");
-			}
-		}
-		
-		if(filterText.length() > 0){
-			return getSqlOfBasisSubstance(20, basisAttributes, filterText.substring(0, filterText.lastIndexOf(" AND ")));
-		}else{
-			return getSqlOfBasisSubstance(20, basisAttributes, "");
-		}
+	public String getSqlOfBasisSubstanceWithEqual(List<BasisAttribute> basisAttributes, Map<String, Object> params, String filterText){
+		String filter = buildParamWithEqual(params, filterText);
+		return getSqlOfBasisSubstance(20, basisAttributes, filter);
 	}
 	
-	public String getSqlOfBasisSubstanceWithLike(List<BasisAttribute> basisAttributes, Map<String, String> params){
-		StringBuilder filterText = new StringBuilder();
-		if(params != null && !params.isEmpty()){
-			for(Entry<String, String> entry : params.entrySet()){
-				if(StringUtil.isNullOrEmpty(entry.getValue())){
-					continue;
-				}
-				filterText.append(" " + entry.getKey() + " LIKE '%" + entry.getValue() + "%' AND ");
-			}
-		}
+	public String getSqlOfBasisSubstanceWithEqual(List<BasisAttribute> basisAttributes, String filterText){
+			return getSqlOfBasisSubstance(20, basisAttributes, filterText);
+	}
+	
+	public String getSqlOfBasisSubstanceWithLike(List<BasisAttribute> basisAttributes, Map<String, Object> params, String filterText){
+		String filter = buildParamWithLike(params, filterText);
+		return getSqlOfBasisSubstance(20, basisAttributes, filter);
 		
-		if(filterText.length() > 0){
-			return getSqlOfBasisSubstance(20, basisAttributes, filterText.substring(0, filterText.lastIndexOf(" AND ")));
-		}else{
-			return getSqlOfBasisSubstance(20, basisAttributes, "");
-		}
+	}
+	public String getSqlOfBasisSubstanceWithLike(List<BasisAttribute> basisAttributes, String filterText){
+		return getSqlOfBasisSubstance(20, basisAttributes, filterText);
 	}
 	
 	/**
@@ -101,7 +83,6 @@ public class BasisSqlHelper {
 	 * @return
 	 */
 	public String getSubSql(List<BasisAttribute> basisAttributes){
-		LOG.info("本次处理的属性数量为 {}", basisAttributes.size());
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT " + basisAttributes.get(0).getAttributeColumn() + ".BASIS_SUBSTANCE_ID");
 		for(BasisAttribute basisAttribute : basisAttributes){
@@ -141,7 +122,50 @@ public class BasisSqlHelper {
 		}
 		
 		sql.delete(sql.lastIndexOf(" LEFT JOIN "), sql.length());
-		System.out.println(sql.toString());
 		return sql.toString();
+	}
+	
+	public String buildParamWithEqual(Map<String, Object> params, String filterText){
+		StringBuilder text = new StringBuilder();
+		if(params != null && !params.isEmpty()){
+			for(Entry<String, Object> entry : params.entrySet()){
+				if(entry.getValue() == null || StringUtil.isNullOrEmpty(String.valueOf(entry.getValue()))){
+					continue;
+				}
+				text.append(" " + entry.getKey() + " = '" + entry.getValue() + "' AND ");
+			}
+		}
+		
+		if(text.length() > 0){
+			if(!StringUtil.isNullOrEmpty(filterText)){
+				return text.append(filterText).toString();
+			}else{
+				return text.substring(0, text.lastIndexOf(" AND "));
+			}
+		}else{
+			return filterText;
+		}
+	}
+	
+	public String buildParamWithLike(Map<String, Object> params, String filterText){
+		StringBuilder text = new StringBuilder();
+		if(params != null && !params.isEmpty()){
+			for(Entry<String, Object> entry : params.entrySet()){
+				if(entry.getValue() == null || StringUtil.isNullOrEmpty(String.valueOf(entry.getValue()))){
+					continue;
+				}
+				text.append(" " + entry.getKey() + " LIKE '%" + entry.getValue() + "%' AND ");
+			}
+		}
+		
+		if(text.length() > 0){
+			if(!StringUtil.isNullOrEmpty(filterText)){
+				return text.append(filterText).toString();
+			}else{
+				return text.substring(0, text.lastIndexOf(" AND "));
+			}
+		}else{
+			return filterText;
+		}
 	}
 }

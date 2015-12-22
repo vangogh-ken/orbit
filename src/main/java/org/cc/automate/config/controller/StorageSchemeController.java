@@ -28,7 +28,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Map<String, Object>> list(HttpServletRequest request){
-		return storageSchemeService.query(Service.substanceTypeCache.get(NodeHost.class.getName()), basisParamHelper.convertParam(request.getParameterMap()));
+		return storageSchemeService.query(NodeHost.class, basisParamHelper.convertParam(request.getParameterMap()));
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(value = "/toAdd", method = RequestMethod.GET)
 	public Map<String, Object> toAdd(HttpServletRequest request){
-		return storageSchemeService.toAdd(Service.substanceTypeCache.get(NodeHost.class.getName()));
+		return storageSchemeService.toAdd(NodeHost.class);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String doneAdd(HttpServletRequest request){
-		if(storageSchemeService.doneAdd(Service.substanceTypeCache.get(NodeHost.class.getName()), "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
+		if(storageSchemeService.doneAdd(NodeHost.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
 			return "success";
 		}
 		return "error";

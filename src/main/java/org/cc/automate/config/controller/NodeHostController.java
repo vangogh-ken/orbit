@@ -28,7 +28,7 @@ public class NodeHostController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Map<String, Object>> list(HttpServletRequest request){
-		return nodeHostService.query(Service.substanceTypeCache.get(NodeHost.class.getName()), basisParamHelper.convertParam(request.getParameterMap()));
+		return nodeHostService.query(NodeHost.class, basisParamHelper.convertParam(request.getParameterMap()));
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class NodeHostController extends BaseController{
 	 */
 	@RequestMapping(value = "/toAdd", method = RequestMethod.GET)
 	public Map<String, Object> toAdd(HttpServletRequest request){
-		return nodeHostService.toAdd(Service.substanceTypeCache.get(NodeHost.class.getName()));
+		return nodeHostService.toAdd(NodeHost.class);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class NodeHostController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String doneAdd(HttpServletRequest request){
-		if(nodeHostService.doneAdd(Service.substanceTypeCache.get(NodeHost.class.getName()), "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
+		if(nodeHostService.doneAdd(NodeHost.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
 			return "success";
 		}
 		return "error";
@@ -76,5 +76,10 @@ public class NodeHostController extends BaseController{
 		}else{
 			return "error";
 		}
+	}
+	
+	@RequestMapping(value = "/scan", method = RequestMethod.GET)
+	public List<Map<String, Object>> scan(){
+		return nodeHostService.scan();
 	}
 }

@@ -9,10 +9,12 @@ import org.cc.automate.config.domain.Environment;
 import org.cc.automate.config.service.EnvironmentService;
 import org.cc.automate.config.service.Service;
 import org.cc.automate.core.BasisParamHelper;
+import org.cc.automate.core.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,8 +29,10 @@ public class EnvironmentController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Map<String, Object>> list(HttpServletRequest request){
-		return environmentService.query(Service.substanceTypeCache.get(Environment.class.getName()), basisParamHelper.convertParam(request.getParameterMap()));
+	public Pager list(HttpServletRequest request){
+		Pager pager = new Pager(10, 1);
+		pager.setResults(environmentService.query(Environment.class, basisParamHelper.convertParam(request.getParameterMap())));
+		return pager;
 	}
 	
 	/**
@@ -38,7 +42,7 @@ public class EnvironmentController extends BaseController{
 	 */
 	@RequestMapping(value = "/toAdd", method = RequestMethod.GET)
 	public Map<String, Object> toAdd(HttpServletRequest request){
-		return environmentService.toAdd(Service.substanceTypeCache.get(Environment.class.getName()));
+		return environmentService.toAdd(Environment.class);
 	}
 	
 	/**
@@ -48,7 +52,7 @@ public class EnvironmentController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String doneAdd(HttpServletRequest request){
-		if(environmentService.doneAdd(Service.substanceTypeCache.get(Environment.class.getName()), "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
+		if(environmentService.doneAdd(Environment.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
 			return "success";
 		}
 		return "error";
@@ -58,6 +62,12 @@ public class EnvironmentController extends BaseController{
 	@RequestMapping(value = "/{basisSubstanceId}", method = RequestMethod.GET)
 	public Map<String, Object> toUpdate(@PathVariable String basisSubstanceId){
 		return environmentService.toUpdate(basisSubstanceId);
+	}
+	//检查环境名称是否重复
+	@RequestMapping(value = "checkName", method = RequestMethod.GET)
+	public Map<String, Object> checkName(@RequestParam(required=false) String basisSubstanceId, 
+			@RequestParam String HJMC){
+		return environmentService.checkName(basisSubstanceId, HJMC);
 	}
 	
 	@RequestMapping(value = "/{basisSubstanceId}", method = RequestMethod.PUT)
@@ -98,6 +108,22 @@ public class EnvironmentController extends BaseController{
 	public Map<String, Object> execute(@PathVariable String basisSubstanceId){
 		int version = 1;
 		return environmentService.execute(version, basisSubstanceId);
+	}
+	
+	//NODEHOST
+	@RequestMapping(value = "/{environmentId}/nodehosts", method = RequestMethod.GET)
+	public Map<String, Object> nodehosts(@PathVariable String environmentId){
+		return environmentService.nodehosts(environmentId);
+	}
+	
+	@RequestMapping(value = "/{environmentId}/nodehosts/{nodehostId}", method = RequestMethod.POST)
+	public Map<String, Object> addNodehost(@PathVariable String environmentId, @PathVariable String nodehostId){
+		return environmentService.addNodehost(environmentId, nodehostId);
+	}
+	
+	@RequestMapping(value = "/{environmentId}/nodehosts/{nodehostId}", method = RequestMethod.DELETE)
+	public Map<String, Object> deleteNodehost(@PathVariable String environmentId, @PathVariable String nodehostId){
+		return environmentService.deleteNodehost(environmentId, nodehostId);
 	}
 	
 }

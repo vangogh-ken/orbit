@@ -29,7 +29,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ServiceImpl<T> {
 	private static Logger LOG = LoggerFactory.getLogger(ServiceImpl.class);
-	String basisSubstanceTypeId;
+	//String basisSubstanceTypeId;
 	@Autowired
 	private BasisSqlHelper basisSqlHelper;
 	@Autowired
@@ -44,40 +44,75 @@ public class ServiceImpl<T> {
 	private BasisValueDao basisValueDao;
 	
 	static{
-		Service.substanceTypeCache.put(Environment.class.getName(), "5b959b67-91b1-11e5-bf87-10604b6fd31b");
-		Service.substanceTypeCache.put(NodeHost.class.getName(), "6fe2b956-91b1-11e5-bf87-10604b6fd31b");
-		Service.substanceTypeCache.put(StorageScheme.class.getName(), "74ef1aed-91b1-11e5-bf87-10604b6fd31b");
+		Service.substanceTypeCache.put(Environment.class, "5b959b67-91b1-11e5-bf87-10604b6fd31b");
+		Service.substanceTypeCache.put(NodeHost.class, "6fe2b956-91b1-11e5-bf87-10604b6fd31b");
+		Service.substanceTypeCache.put(StorageScheme.class, "74ef1aed-91b1-11e5-bf87-10604b6fd31b");
 	}
 	
-	public Map<String, Object> toAdd(String basisSubstanceTypeId){
+	public Map<String, Object> toAdd(Class<?> clazz){
+		String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
 		Map<String, Object> map = new HashMap<String, Object>();
 		BasisSubstanceType basisSubstanceType = basisSubstanceTypeDao.getById(basisSubstanceTypeId);
 		map.put("basisAttributes", basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceType.getId()));
 		return map;
 	}
 	
-	public boolean doneAdd(String basisSubstanceTypeId, String status, Map<String, String> params){
+	public boolean doneAdd(Class<?> clazz, String status, Map<String, Object> params){
+		long l1 = System.currentTimeMillis();
+		String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
 		BasisSubstanceType basisSubstanceType = basisSubstanceTypeDao.getById(basisSubstanceTypeId);
-		
 		BasisSubstance basisSubstance = new BasisSubstance();
 		String basisSubstanceId = StringUtil.getUUID();
 		basisSubstance.setId(basisSubstanceId);
 		basisSubstance.setBasisSubstanceType(basisSubstanceType);
 		basisSubstance.setStatus(status);
 		basisSubstanceDao.add(basisSubstance);
-		
+		long l2 = System.currentTimeMillis();
 		List<BasisValue> list = new ArrayList<BasisValue>();
 		List<BasisAttribute> basisAttributes = basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceType.getId());
 		for(BasisAttribute basisAttribute : basisAttributes){
 			BasisValue basisValue = new BasisValue();
 			basisValue.setBasisSubstance(basisSubstance);
 			basisValue.setBasisAttribute(basisAttribute);
+			
+			String value = (String)params.get(basisAttribute.getAttributeColumn());
+			if(!StringUtil.isNullOrEmpty(value)){
+				String attributeType = basisAttribute.getAttributeType();
+				switch (attributeType){
+					case "VARCHAR":
+						basisValue.setStringValue(value);
+						break;
+					
+					case "TEXT":
+						basisValue.setTextValue(value);
+						break;
+					
+					case "INT":
+						basisValue.setIntValue(Integer.parseInt(value));
+						break;
+					
+					case "DOUBLE":
+						basisValue.setDoubleValue(Double.parseDouble(value));
+						break;
+					
+					case "DATETIME":
+						basisValue.setDateValue(StringUtil.convert(value));
+						break;
+						
+					case "TIMESTAMP":
+						basisValue.setDateValue(StringUtil.convert(value));
+						break;
+				}
+			}
 			list.add(basisValue);
 		}
-		
+		long l3 = System.currentTimeMillis();
 		basisValueDao.insertBatch(list);
-		
-		return doneUpdate(basisSubstanceId, status, params);
+		long l4 = System.currentTimeMillis();
+		LOG.info(l2-l1 + "");
+		LOG.info(l3-l2 + "");
+		LOG.info(l4-l3 + "");
+		return true;
 	}
 	
 	
@@ -85,7 +120,7 @@ public class ServiceImpl<T> {
 		return getById(basisSubstanceId);
 	}
 	
-	public boolean doneUpdate(String basisSubstanceId, String status, Map<String, String> params){
+	public boolean doneUpdate(String basisSubstanceId, String status, Map<String, Object> params){
 		BasisSubstance basisSubstance = basisSubstanceDao.getById(basisSubstanceId);
 		if(basisSubstance == null){
 			throw new BusinessException("查询不到任何相关记录");
@@ -98,7 +133,7 @@ public class ServiceImpl<T> {
 		List<BasisValue> values = basisValueDao.getByBasisSubstanceId(basisSubstanceId);
 		if(values != null && !values.isEmpty()){
 			for(BasisValue basisValue : values){
-				String value = params.get(basisValue.getBasisAttribute().getAttributeColumn());
+				String value = (String)params.get(basisValue.getBasisAttribute().getAttributeColumn());
 				if(!StringUtil.isNullOrEmpty(value)){
 					String attributeType = basisValue.getBasisAttribute().getAttributeType();
 					switch (attributeType){
@@ -157,16 +192,38 @@ public class ServiceImpl<T> {
 		return false;
 	}
 	
-	public List<Map<String, Object>> query(String basisSubstanceTypeId, Map<String, String> params){
-		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithLike(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params);
+	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params, String filterText){
+		String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
+		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithLike(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, filterText);
 		LOG.info("Executing sql : {} ", sql);
 		return jdbcTemplate.queryForList(sql);
 	}
 	
-	public Map<String, Object> queryForOne(String basisSubstanceTypeId, Map<String, String> params){
-		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params);
+	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params){
+		/*String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
+		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithLike(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, null);
 		LOG.info("Executing sql : {} ", sql);
-		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return jdbcTemplate.queryForList(sql);*/
+		return query(clazz, params, null);
+	}
+	
+	public List<Map<String, Object>> queryForList(Class<?> clazz, Map<String, Object> params, String filterText){
+		String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
+		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, filterText);
+		LOG.info("Executing sql : {} ", sql);
+		return jdbcTemplate.queryForList(sql);
+	}
+	
+	public List<Map<String, Object>> queryForList(Class<?> clazz, Map<String, Object> params){
+		/*String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
+		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, null);
+		LOG.info("Executing sql : {} ", sql);
+		return jdbcTemplate.queryForList(sql);*/
+		return queryForList(clazz, params, null);
+	}
+	
+	public Map<String, Object> queryForOne(Class<?> clazz, Map<String, Object> params){
+		List<Map<String, Object>> list = queryForList(clazz, params, null);
 		if(list == null || list.isEmpty()){
 			return null;
 		}else{
@@ -180,10 +237,9 @@ public class ServiceImpl<T> {
 			throw new BusinessException("查询不到任何相关记录");
 		}
 		
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ID", basisSubstanceId);
-		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(
-				basisAttributeDao.getByBasisSubstanceTypeId(basisSubstance.getBasisSubstanceType().getId()), params);
+		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstance.getBasisSubstanceType().getId()), params, null);
 		LOG.info("Executing sql : {} ", sql);
 		
 		try{

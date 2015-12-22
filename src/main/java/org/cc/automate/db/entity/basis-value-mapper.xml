@@ -206,9 +206,8 @@
 	<insert id="add" parameterType="BasisValue">
 		insert into BASIS_VALUE( CREATE_TIME, BASIS_SUBSTANCE_ID, STATUS,
 		STRING_VALUE, DOUBLE_VALUE, BASIS_ATTR_ID, ID, DESCN, MODIFY_TIME,
-		TEXT_VALUE, INT_VALUE, DATE_VALUE, DISP_INX )values ( #{createTime},
-		#{basisSubstance.id}, #{status}, #{stringValue}, #{doubleValue},
-		#{basisAttribute.id},
+		TEXT_VALUE, INT_VALUE, DATE_VALUE, DISP_INX )values 
+		( #{createTime}, #{basisSubstance.id}, #{status}, #{stringValue}, #{doubleValue}, #{basisAttribute.id},
 		<if test="id != null and id != '' ">
 			#{id},
 		</if>

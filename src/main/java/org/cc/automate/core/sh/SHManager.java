@@ -1,14 +1,12 @@
 package org.cc.automate.core.sh;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.cc.automate.core.CP_SpringContext;
 import org.cc.automate.core.PropertiesFactory;
-import org.cc.automate.utils.ShellUtil;
 import org.cc.automate.utils.StringUtil;
 import org.chinacloud.command.CmdDTO;
 import org.chinacloud.command.Command;

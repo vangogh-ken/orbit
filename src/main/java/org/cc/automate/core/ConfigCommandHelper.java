@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.cc.automate.core.sh.NodeHostDTO;
 import org.cc.automate.utils.ShellUtil;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Administrator
  * 用于脚本执行的处理
  */
+@Component
 public class ConfigCommandHelper implements ConfigAbstractHelper{
 	public List<Map<String, Object>> getNodehosts(){
 		List<String> list = ShellUtil.executeSH("");

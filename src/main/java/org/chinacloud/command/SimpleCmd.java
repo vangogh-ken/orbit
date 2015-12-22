@@ -14,7 +14,7 @@ public class SimpleCmd extends Command<String>{
 	}
 	
 	@Override
- 	void build() {
+	public void build() {
 		StringBuilder text = new StringBuilder();
 		text.append(cmd.getAbsolutePath());
 		if(cmd.getParams() != null && !cmd.getParams().isEmpty()){
@@ -35,7 +35,7 @@ public class SimpleCmd extends Command<String>{
 	}
 
 	@Override
-	CmdTask<String> getTask() {
+	public CmdTask<String> getTask() {
 		return new SimpleTask(this);
 	}
 	

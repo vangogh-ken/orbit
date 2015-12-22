@@ -14,6 +14,7 @@ import org.cc.automate.core.ConfigTargetHelper;
 import org.cc.automate.core.el.JuelFactory;
 import org.cc.automate.core.sh.SHManager;
 import org.cc.automate.utils.SpringSecurityUtil;
+import org.cc.automate.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -47,9 +48,9 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 		}
 		
 		//校验节点配置
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("HJPZID", basisSubstanceId);
-		List<Map<String, Object>> nodehosts = query(org.cc.automate.config.service.Service.substanceTypeCache.get(NodeHost.class.getName()), params);
+		List<Map<String, Object>> nodehosts = query(NodeHost.class, params);
 		
 		if(nodehosts == null || nodehosts.isEmpty()){
 			throw new BusinessException("查询不到任何节点配置");
@@ -68,7 +69,7 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 		}
 		
 		//校验存储配置
-		Map<String, Object> storagescheme = queryForOne(org.cc.automate.config.service.Service.substanceTypeCache.get(StorageScheme.class.getName()), params);
+		Map<String, Object> storagescheme = queryForOne(StorageScheme.class, params);
 		if(storagescheme == null){
 			throw new BusinessException("查询不到任何存储配置");
 		}
@@ -99,10 +100,10 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 	public Map<String, Object> configV1(String basisSubstanceId) {
 		Map<String, Object> environment = getById(basisSubstanceId);
 		Map<String, Object> result = new HashMap<String, Object>();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("HJPZID", basisSubstanceId);
-		List<Map<String, Object>> nodehosts = query(org.cc.automate.config.service.Service.substanceTypeCache.get(NodeHost.class.getName()), params);
-		Map<String, Object> storagescheme = queryForOne(org.cc.automate.config.service.Service.substanceTypeCache.get(StorageScheme.class.getName()), params);
+		List<Map<String, Object>> nodehosts = query(NodeHost.class, params);
+		Map<String, Object> storagescheme = queryForOne(StorageScheme.class, params);
 		
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put("environment", environment);
@@ -186,6 +187,65 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 			messagingTemplate.convertAndSendToUser(SpringSecurityUtil.getCurrentUserName(), "/info", result);
 			flag = (boolean)result.get("result");
 		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> checkName(String basisSubstanceId, String HJMC) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("HJMC", HJMC);
+		Map<String, Object> target = queryForOne(Environment.class, params);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(target == null || target.isEmpty()){
+			result.put("result", true);
+		}else{
+			if(!StringUtil.isNullOrEmpty(basisSubstanceId)){
+				if(target.get("ID") != null && basisSubstanceId.equals(target.get("ID"))){
+					result.put("result", true);
+				}else{
+					result.put("result", false);
+					result.put("message", "存在重复");
+				}
+			}else{
+				result.put("result", true);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> nodehosts(String environmentId) {
+		Map<String, Object> results = new HashMap<String, Object>();
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("HJPZID", environmentId);
+		List<Map<String, Object>> addedList = queryForList(NodeHost.class, params);
+		results.put("addedList", addedList);
+		List<Map<String, Object>> addtoList = queryForList(NodeHost.class, null, ("HJPZID != '" + environmentId + "' OR HJPZID IS NULL"));
+		results.put("addtoList", addtoList);
+		
+		results.put("environment", getById(environmentId));
+		return results;
+	}
+
+	@Override
+	public Map<String, Object> addNodehost(String environmentId, String nodehostId) {
+		Map<String, Object> nodehost = getById(nodehostId);
+		nodehost.put("HJPZID", environmentId);
+		boolean flag = doneUpdate(nodehostId, "已添加", nodehost);
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("result", flag);
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> deleteNodehost(String environmentId, String nodehostId) {
+		Map<String, Object> nodehost = getById(nodehostId);
+		nodehost.put("HJPZID", "A");//所有将设置为null或空字符串都约定设置为A
+		boolean flag = doneUpdate(nodehostId, "已移除", nodehost);
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("result", flag);
 		return result;
 	}
 }

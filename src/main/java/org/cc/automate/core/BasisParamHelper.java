@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BasisParamHelper {
-	public Map<String, String> convertParam(Map<String, String[]> paramMap){
-		Map<String, String> map = new HashMap<String, String>();
+	public Map<String, Object> convertParam(Map<String, String[]> paramMap){
+		Map<String, Object> map = new HashMap<String, Object>();
 		for(Entry<String, String[]> entry : paramMap.entrySet()){
 			String[] value = entry.getValue();
 			if(value.length > 1){

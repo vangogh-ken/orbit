@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface Service<T> {
-	public static Map<String, String> substanceTypeCache = new HashMap<String, String>();
+	public static Map<Object, String> substanceTypeCache = new HashMap<Object, String>();
 	
 	/**
 	 * 只获取相关字段信息
@@ -13,7 +13,7 @@ public interface Service<T> {
 	 * @param status
 	 * @return
 	 */
-	public Map<String, Object> toAdd(String basisSubstanceTypeId);
+	public Map<String, Object> toAdd(Class<?> clazz);
 	/**
 	 * 创建一个新的对象
 	 * @param basisSubstanceTypeId
@@ -21,7 +21,7 @@ public interface Service<T> {
 	 * @param params
 	 * @return
 	 */
-	public boolean doneAdd(String basisSubstanceTypeId, String status, Map<String, String> params);
+	public boolean doneAdd(Class<?> clazz, String status, Map<String, Object> params);
 	
 	/**
 	 * 根据对象ID获取本身数据和
@@ -36,9 +36,17 @@ public interface Service<T> {
 	 * @param params
 	 * @return
 	 */
-	public boolean doneUpdate(String basisSubstanceId, String status, Map<String, String> params);
+	public boolean doneUpdate(String basisSubstanceId, String status, Map<String, Object> params);
 	
-	public List<Map<String, Object>> query(String basisSubstanceTypeId, Map<String, String> params);
+	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params, String filterText);
+	
+	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params);
+	
+	public List<Map<String, Object>> queryForList(Class<?> clazz, Map<String, Object> params, String filterText);
+	
+	public List<Map<String, Object>> queryForList(Class<?> clazz, Map<String, Object> params);
+	
+	public Map<String, Object> queryForOne(Class<?> clazz, Map<String, Object> params);
 	
 	public Map<String, Object> getById(String basisSubstanceId);
 	
