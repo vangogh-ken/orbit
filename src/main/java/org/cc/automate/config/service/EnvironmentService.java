@@ -6,6 +6,12 @@ import org.cc.automate.config.domain.Environment;
 
 public interface EnvironmentService extends Service<Environment> {
 	/**
+	 * 初始化最终选择的存储结果
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Object> initStoragescheme(Map<String, Object> params);
+	/**
 	 * 校验逻辑
 	 * @param basisSubstanceId
 	 * @return
@@ -43,6 +49,15 @@ public interface EnvironmentService extends Service<Environment> {
 	 * @return
 	 */
 	public Map<String, Object> nodehosts(String environmentId);
+	
+	/**
+	 * 获取节点信息
+	 * @param environmentId
+	 * @param nodehostId
+	 * @return
+	 */
+	public Map<String, Object> getNodehost(String environmentId, String nodehostId);
+	
 	/**
 	 * 添加节点
 	 * @param environmentId
@@ -57,5 +72,26 @@ public interface EnvironmentService extends Service<Environment> {
 	 * @return
 	 */
 	public Map<String, Object> deleteNodehost(String environmentId, String nodehostId);
+	/**
+	 * 获取存储方案
+	 * @param environmentId
+	 * @return
+	 */
+	public Map<String, Object> storageschemes(String environmentId);
+	/**
+	 * 获取环境的所有信息
+	 * @param basisSubstanceId
+	 * @return
+	 */
+	public Map<String, Object> topologies(String environmentId);
+	
+	public Map<String, Object> get(String environmentId);
+	/**
+	 * 扫描节点信息
+	 * @param environmentId
+	 * @return
+	 */
+	public Map<String, Object> nodehostsScan(String environmentId);
+	
 	
 }

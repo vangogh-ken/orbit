@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface Service<T> {
-	public static Map<Object, String> substanceTypeCache = new HashMap<Object, String>();
+	public static Map<Class<?>, String> substanceTypeCache = new HashMap<Class<?>, String>();
 	
 	/**
 	 * 只获取相关字段信息
@@ -39,6 +39,8 @@ public interface Service<T> {
 	public boolean doneUpdate(String basisSubstanceId, String status, Map<String, Object> params);
 	
 	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params, String filterText);
+	
+	public List<Map<String, Object>> queryAll(Class<?> clazz);
 	
 	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params);
 	

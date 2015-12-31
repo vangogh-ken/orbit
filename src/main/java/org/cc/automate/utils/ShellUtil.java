@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cc.automate.core.BusinessException;
+import org.hibernate.mapping.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -55,5 +58,4 @@ public class ShellUtil {
 
 		return strList;
 	}
-
 }

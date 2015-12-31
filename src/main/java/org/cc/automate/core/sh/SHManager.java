@@ -44,9 +44,9 @@ public class SHManager {
 			SimpleCmd simpleCmd = new SimpleCmd(new CmdDTO(Command.Type.DEFALUT, shPath));
 			String text = simpleCmd.execute();//执行脚本返回结果
 			/*List<String> texts = ShellUtil.executeSH(shPath);*/
-			System.out.println(text);
-			result.put("message", type + "：　" +text);
+			result.put("message", text);
 		}
+		result.put("type", type);
 		result.put("result", true);
 		return result;
 	}

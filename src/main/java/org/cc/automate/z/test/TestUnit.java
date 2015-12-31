@@ -1,7 +1,12 @@
 package org.cc.automate.z.test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.cc.automate.config.service.EnvironmentService;
 import org.junit.Test;
@@ -15,6 +20,19 @@ public class TestUnit {
 	private final static Logger LOG = LoggerFactory.getLogger(TestUnit.class);
 	
 	public ApplicationContext applicationContext = null;
+	@Test
+	public void tt(){
+		System.out.println(new SimpleDateFormat("yyMMww").format(Calendar.getInstance(Locale.CHINA).getTime()));
+		System.out.println(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
+		
+		Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+		try {
+			System.out.println(new SimpleDateFormat("yyMMww").parse("2015-12-28"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@Test
 	public void ttest(){

@@ -29,7 +29,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ServiceImpl<T> {
 	private static Logger LOG = LoggerFactory.getLogger(ServiceImpl.class);
-	//String basisSubstanceTypeId;
 	@Autowired
 	private BasisSqlHelper basisSqlHelper;
 	@Autowired
@@ -131,9 +130,20 @@ public class ServiceImpl<T> {
 		basisSubstanceDao.modify(basisSubstance);
 		
 		List<BasisValue> values = basisValueDao.getByBasisSubstanceId(basisSubstanceId);
+		List<BasisValue> target = new ArrayList<BasisValue>();
 		if(values != null && !values.isEmpty()){
 			for(BasisValue basisValue : values){
-				String value = (String)params.get(basisValue.getBasisAttribute().getAttributeColumn());
+				Object oV = params.get(basisValue.getBasisAttribute().getAttributeColumn());
+				String value = null;
+				if(oV != null){
+					if(oV instanceof String){
+						value = (String)oV;
+					}else{
+						value = String.valueOf(oV);
+					}
+				}
+				
+				//String value = (String)params.get(basisValue.getBasisAttribute().getAttributeColumn());
 				if(!StringUtil.isNullOrEmpty(value)){
 					String attributeType = basisValue.getBasisAttribute().getAttributeType();
 					switch (attributeType){
@@ -161,24 +171,13 @@ public class ServiceImpl<T> {
 							basisValue.setDateValue(StringUtil.convert(value));
 							break;
 					}
-					/*
-					if("VARCHAR".equals(attributeType)){
-						basisValue.setStringValue(value);
-					}else if("TEXT".equals(attributeType)){
-						basisValue.setTextValue(value);
-					}else if("INT".equals(attributeType)){
-						basisValue.setIntValue(Integer.parseInt(value));
-					}else if("DOUBLE".equals(attributeType)){
-						basisValue.setDoubleValue(Double.parseDouble(value));
-					}else if("DATETIME".equals(attributeType) || "TIMESTAMP".equals(attributeType)){
-						basisValue.setDateValue(StringUtil.convert(value));
-					}*/
-					
 					basisValue.setStatus("T");//T表示已填报
-					//basisValueDao.modify(basisValue);
+					target.add(basisValue);
 				}
 			}
-			basisValueDao.updateBatch(values);
+			if(!target.isEmpty()){
+				basisValueDao.updateBatch(target);
+			}
 		}
 		
 		return true;
@@ -199,11 +198,11 @@ public class ServiceImpl<T> {
 		return jdbcTemplate.queryForList(sql);
 	}
 	
+	public List<Map<String, Object>> queryAll(Class<?> clazz){
+		return queryForList(clazz, null, null);
+	}
+	
 	public List<Map<String, Object>> query(Class<?> clazz, Map<String, Object> params){
-		/*String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
-		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithLike(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, null);
-		LOG.info("Executing sql : {} ", sql);
-		return jdbcTemplate.queryForList(sql);*/
 		return query(clazz, params, null);
 	}
 	
@@ -215,10 +214,6 @@ public class ServiceImpl<T> {
 	}
 	
 	public List<Map<String, Object>> queryForList(Class<?> clazz, Map<String, Object> params){
-		/*String basisSubstanceTypeId = Service.substanceTypeCache.get(clazz);
-		String sql = basisSqlHelper.getSqlOfBasisSubstanceWithEqual(basisAttributeDao.getByBasisSubstanceTypeId(basisSubstanceTypeId), params, null);
-		LOG.info("Executing sql : {} ", sql);
-		return jdbcTemplate.queryForList(sql);*/
 		return queryForList(clazz, params, null);
 	}
 	

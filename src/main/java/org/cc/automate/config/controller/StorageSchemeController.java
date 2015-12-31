@@ -5,8 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.cc.automate.config.domain.NodeHost;
-import org.cc.automate.config.service.Service;
+import org.cc.automate.config.domain.StorageScheme;
 import org.cc.automate.config.service.StorageSchemeService;
 import org.cc.automate.core.BasisParamHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Map<String, Object>> list(HttpServletRequest request){
-		return storageSchemeService.query(NodeHost.class, basisParamHelper.convertParam(request.getParameterMap()));
+		return storageSchemeService.query(StorageScheme.class, basisParamHelper.convertParam(request.getParameterMap()));
 	}
 	
 	/**
@@ -38,7 +37,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(value = "/toAdd", method = RequestMethod.GET)
 	public Map<String, Object> toAdd(HttpServletRequest request){
-		return storageSchemeService.toAdd(NodeHost.class);
+		return storageSchemeService.toAdd(StorageScheme.class);
 	}
 	
 	/**
@@ -48,7 +47,7 @@ public class StorageSchemeController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String doneAdd(HttpServletRequest request){
-		if(storageSchemeService.doneAdd(NodeHost.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
+		if(storageSchemeService.doneAdd(StorageScheme.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
 			return "success";
 		}
 		return "error";

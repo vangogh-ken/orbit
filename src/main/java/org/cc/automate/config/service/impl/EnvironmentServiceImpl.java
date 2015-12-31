@@ -1,16 +1,22 @@
 package org.cc.automate.config.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.io.FileUtils;
 import org.cc.automate.config.domain.Environment;
 import org.cc.automate.config.domain.NodeHost;
+import org.cc.automate.config.domain.NodehostDTO;
 import org.cc.automate.config.domain.StorageScheme;
 import org.cc.automate.config.service.EnvironmentService;
 import org.cc.automate.core.BusinessException;
 import org.cc.automate.core.ConfigLogicHelper;
 import org.cc.automate.core.ConfigTargetHelper;
+import org.cc.automate.core.Constant;
 import org.cc.automate.core.el.JuelFactory;
 import org.cc.automate.core.sh.SHManager;
 import org.cc.automate.utils.SpringSecurityUtil;
@@ -18,7 +24,9 @@ import org.cc.automate.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service("environmentService")
 public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements EnvironmentService {
 	@Autowired
@@ -28,6 +36,40 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 	@Autowired
 	private ConfigTargetHelper configTargetHelper;
 	private SHManager shManager = new SHManager();
+	
+	@Override
+	public Map<String, Object> initStoragescheme(Map<String, Object> params) {
+		if((params.get("GLUSTERFS_NOVA") != null && "T".equals(params.get("GLUSTERFS_NOVA"))) ||
+				(params.get("GLUSTERFS_GLANCE") != null && "T".equals(params.get("GLUSTERFS_GLANCE"))) ||
+				(params.get("GLUSTERFS_CINDER") != null && "T".equals(params.get("GLUSTERFS_CINDER")))){
+			params.put("GLUSTERFS", "T");
+		}else{
+			params.put("GLUSTERFS", "F");
+		}
+		
+		if((params.get("OCFS2_NOVA") != null && "T".equals(params.get("OCFS2_NOVA"))) ||
+				(params.get("OCFS2_GLANCE") != null && "T".equals(params.get("OCFS2_GLANCE"))) ||
+				(params.get("OCFS2_CINDER") != null && "T".equals(params.get("OCFS2_CINDER")))){
+			params.put("OCFS2", "T");
+		}else{
+			params.put("OCFS2", "F");
+		}
+		
+		if((params.get("CEPH_NOVA") != null && "T".equals(params.get("CEPH_NOVA"))) ||
+				(params.get("CEPH_GLANCE") != null && "T".equals(params.get("CEPH_GLANCE"))) ||
+				(params.get("CEPH_CINDER") != null && "T".equals(params.get("CEPH_CINDER")))){
+			params.put("CEPH", "T");
+		}else{
+			params.put("CEPH", "F");
+		}
+		
+		if((params.get("LOCALDISK_NOVA") != null && "T".equals(params.get("LOCALDISK_NOVA")))){
+			params.put("LOCALDISK", "T");
+		}else{
+			params.put("LOCALDISK", "F");
+		}
+		return params;
+	}
 	
 	@Override
 	public Map<String, Object> initiate(int version, String basisSubstanceId) {
@@ -110,7 +152,7 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 		variables.put("nodehosts", nodehosts);
 		variables.put("storagescheme", storagescheme);
 		
-		JuelFactory.juelFactory().getValue("", "", variables);
+		JuelFactory.juelFactory().getValue(Constant.configTemplatePath_v1, Constant.configTargetSLSPath, variables);
 		
 		result.put("result", true);
 		result.put("messgae", null);
@@ -248,4 +290,122 @@ public class EnvironmentServiceImpl extends ServiceImpl<Environment> implements 
 		result.put("result", flag);
 		return result;
 	}
+
+	@Override
+	public Map<String, Object> getNodehost(String environmentId, String nodehostId) {
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("environment", getById(environmentId));
+		result.put("nodehost", getById(nodehostId));
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> storageschemes(String environmentId) {
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("environment", getById(environmentId));
+		
+		Map<String, Object> storagescheme = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("HJPZID", environmentId);
+		storagescheme = queryForOne(StorageScheme.class, params);
+		if(storagescheme == null){
+			doneAdd(StorageScheme.class, "草稿", params);
+			result.put("storagescheme", queryForOne(StorageScheme.class, params));
+		}else{
+			result.put("storagescheme", storagescheme);
+		}
+		
+		result.put("nodehosts", queryForList(NodeHost.class, params));
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> topologies(String environmentId) {
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("environment", getById(environmentId));
+		
+		Map<String, Object> storagescheme = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("HJPZID", environmentId);
+		storagescheme = queryForOne(StorageScheme.class, params);
+		if(storagescheme == null){
+			doneAdd(StorageScheme.class, "草稿", params);
+			result.put("storagescheme", queryForOne(StorageScheme.class, params));
+		}else{
+			result.put("storagescheme", storagescheme);
+		}
+		
+		result.put("nodehosts", queryForList(NodeHost.class, params));
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> get(String environmentId) {
+		Map<String, Object>  result = new HashMap<String, Object>();
+		result.put("environment", getById(environmentId));
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> nodehostsScan(String environmentId) {
+		//TODO 数据执行命令进行扫描
+		//Map<String, Object> scaned = shManager.executeSH("NODEHOST");
+		//String text = (String)scaned.get("result");
+		String text = null;
+		try {
+			text = FileUtils.readFileToString(new File("C:\\Users\\Administrator\\Desktop\\json.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(!StringUtil.isNullOrEmpty(text)){
+			List<Map<String, Object>> nodehosts = queryAll(NodeHost.class);
+			Map<String, Map<String, Object>> nodehostsMap = new HashMap<String, Map<String, Object>>();
+			if(nodehosts != null && !nodehosts.isEmpty()){
+				for(Map<String, Object> entry : nodehosts){
+					nodehostsMap.put((String)entry.get("ZJM"), entry);
+				}
+			}
+			//List<NodehostDTO> nodehostDTOS = StringUtil.JsonFromStr(StringUtil.JsonMarkElement(StringUtil.JsonTrimKey(text)));//通过扫描出来的节点信息
+			List<NodehostDTO> nodehostDTOS = StringUtil.JsonFromStr(StringUtil.JsonMarkElement(text));//通过扫描出来的节点信息
+			if(nodehostDTOS != null && !nodehostDTOS.isEmpty()){
+				for(NodehostDTO nodehostDTO : nodehostDTOS){//TODO 如果新扫描出的节点，有就添加，如果没有跳过.此逻辑还需要进一步明确
+					Map<String, Object> entry = nodehostsMap.get(nodehostDTO.getNodename());
+					if(entry == null){
+						Map<String, Object> nodehost = new HashMap<String, Object>();
+						//主机名
+						nodehost.put("ZJM", nodehostDTO.getNodename());
+						//是否为部署节点
+						nodehost.put("SFWBSJD", "autodeploy".equals(nodehostDTO.getRole()) == true ? "T" : "F");
+						//管理网卡
+						nodehost.put("GLWK", nodehostDTO.getMgnet().get("mgdev"));
+						//管理网络IP
+						nodehost.put("GLWLIP", nodehostDTO.getMgnet().get("mgip"));
+						//可用网卡数据
+						Map<String, Object> ipInterfaces = nodehostDTO.getIp_interfaces();
+						StringBuilder interfacesText = new StringBuilder();//网卡
+						for(Entry<String, Object> item : ipInterfaces.entrySet()){
+							//if(StringUtil.isWanaIpInterface(item.getKey()) && !nodehost.get("GLWK").equals(item.getKey())){//此处需要将管理网卡排除开外
+							if(StringUtil.isWanaIpInterface(item.getKey())){//此处并不需要将管理网卡排除开外
+								interfacesText.append(item.getKey() + ",");
+							}
+						}
+						
+						if(interfacesText.length() > 0){
+							nodehost.put("KYWK", interfacesText.deleteCharAt(interfacesText.lastIndexOf(",")).toString());
+						}
+						//IPMI地址
+						nodehost.put("IPMIDZ", nodehostDTO.getIpmi_info().get("IP Address"));
+						doneAdd(NodeHost.class, "草稿", nodehost);
+					}
+				}
+			}
+			
+		}
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("result", true);
+		return result;
+	}
+
+	
 }

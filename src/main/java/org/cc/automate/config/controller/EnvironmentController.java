@@ -52,16 +52,22 @@ public class EnvironmentController extends BaseController{
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String doneAdd(HttpServletRequest request){
-		if(environmentService.doneAdd(Environment.class, "草稿", basisParamHelper.convertParam(request.getParameterMap()))){
+		Map<String, Object> params = basisParamHelper.convertParam(request.getParameterMap());
+		
+		if(environmentService.doneAdd(Environment.class, "草稿", environmentService.initStoragescheme(params))){
 			return "success";
 		}
 		return "error";
 	}
 	
-	
 	@RequestMapping(value = "/{basisSubstanceId}", method = RequestMethod.GET)
 	public Map<String, Object> toUpdate(@PathVariable String basisSubstanceId){
 		return environmentService.toUpdate(basisSubstanceId);
+	}
+	
+	@RequestMapping(value = "/{basisSubstanceId}/topologies", method = RequestMethod.GET)
+	public Map<String, Object> topologies(@PathVariable String basisSubstanceId){
+		return environmentService.topologies(basisSubstanceId);
 	}
 	//检查环境名称是否重复
 	@RequestMapping(value = "checkName", method = RequestMethod.GET)
@@ -72,7 +78,8 @@ public class EnvironmentController extends BaseController{
 	
 	@RequestMapping(value = "/{basisSubstanceId}", method = RequestMethod.PUT)
 	public String doneUpdate(@PathVariable String basisSubstanceId, HttpServletRequest request){
-		if(environmentService.doneUpdate(basisSubstanceId, "已保存", basisParamHelper.convertParam(request.getParameterMap()))){
+		Map<String, Object> params = basisParamHelper.convertParam(request.getParameterMap());
+		if(environmentService.doneUpdate(basisSubstanceId, "已保存", environmentService.initStoragescheme(params))){
 			return "success";
 		}else{
 			return "error";
@@ -116,6 +123,16 @@ public class EnvironmentController extends BaseController{
 		return environmentService.nodehosts(environmentId);
 	}
 	
+	@RequestMapping(value = "/{environmentId}/nodehosts/scan", method = RequestMethod.GET)
+	public Map<String, Object> nodehostsScan(@PathVariable String environmentId){
+		return environmentService.nodehostsScan(environmentId);
+	}
+	
+	@RequestMapping(value = "/{environmentId}/nodehosts/{nodehostId}", method = RequestMethod.GET)
+	public Map<String, Object> getNodehost(@PathVariable String environmentId, @PathVariable String nodehostId){
+		return environmentService.getNodehost(environmentId, nodehostId);
+	}
+	
 	@RequestMapping(value = "/{environmentId}/nodehosts/{nodehostId}", method = RequestMethod.POST)
 	public Map<String, Object> addNodehost(@PathVariable String environmentId, @PathVariable String nodehostId){
 		return environmentService.addNodehost(environmentId, nodehostId);
@@ -124,6 +141,12 @@ public class EnvironmentController extends BaseController{
 	@RequestMapping(value = "/{environmentId}/nodehosts/{nodehostId}", method = RequestMethod.DELETE)
 	public Map<String, Object> deleteNodehost(@PathVariable String environmentId, @PathVariable String nodehostId){
 		return environmentService.deleteNodehost(environmentId, nodehostId);
+	}
+	
+	//STORAGESCHEME
+	@RequestMapping(value = "/{environmentId}/storageschemes", method = RequestMethod.GET)
+	public Map<String, Object> storageschemes(@PathVariable String environmentId){
+		return environmentService.storageschemes(environmentId);
 	}
 	
 }

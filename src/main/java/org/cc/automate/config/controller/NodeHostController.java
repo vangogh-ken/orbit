@@ -5,10 +5,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.cc.automate.config.domain.Environment;
 import org.cc.automate.config.domain.NodeHost;
 import org.cc.automate.config.service.NodeHostService;
 import org.cc.automate.config.service.Service;
 import org.cc.automate.core.BasisParamHelper;
+import org.cc.automate.core.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +29,10 @@ public class NodeHostController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Map<String, Object>> list(HttpServletRequest request){
-		return nodeHostService.query(NodeHost.class, basisParamHelper.convertParam(request.getParameterMap()));
+	public Pager list(HttpServletRequest request){
+		Pager pager = new Pager(10, 1);
+		pager.setResults(nodeHostService.query(NodeHost.class, basisParamHelper.convertParam(request.getParameterMap())));
+		return pager;
 	}
 	
 	/**

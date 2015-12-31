@@ -2,11 +2,19 @@ package org.cc.automate.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
+import org.cc.automate.config.domain.Environment;
+import org.cc.automate.config.domain.NodeHost;
+import org.cc.automate.config.service.Service;
+import org.cc.automate.db.dao.BasisAttributeDao;
+import org.cc.automate.db.entity.BasisAttribute;
 import org.cc.automate.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +25,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ConfigLogicHelper implements ConfigAbstractHelper{
+	@Autowired
+	private BasisAttributeDao baisisAttributeDao;
+	
+	
 	public boolean checkLogic() {
 		return false;
 	}
@@ -30,7 +42,8 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	 * @return
 	 */
 	public Map<String, Object> checkEnvironmentRequired(Map<String, Object> environmentObject){
-		
+		Map<String, BasisAttribute> basisAttributeMap = 
+				baisisAttributeDao.getByBasisSubstanceTypeIdWithColumnMap(Service.substanceTypeCache.get(Environment.class));
 		boolean result = true;
 		String message = "";
 		
@@ -39,18 +52,22 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 		int countCinder = 0;//所选CINDER存储至少选一种
 		int countGlance = 0;//所选GLANCE存储只能选择一种
 		for(Entry<String, Object> entry : environmentObject.entrySet()){
-			if(entry.getKey().startsWith("XNHLX_") && !StringUtil.isNullOrEmpty((String)entry.getValue())){
+			if(!result){
+				break;
+			}
+			if(entry.getKey().startsWith("XNHLX_") && !StringUtil.isNullOrEmpty((String)entry.getValue()) && "T".equals(entry.getValue())){
 				countVirtual++;
-			}else if(entry.getKey().endsWith("_NOVA") && !StringUtil.isNullOrEmpty((String)entry.getValue())){
+			}else if(entry.getKey().endsWith("_NOVA") && !StringUtil.isNullOrEmpty((String)entry.getValue()) && "T".equals(entry.getValue())){
 				countNova++;
-			}else if(entry.getKey().endsWith("_CINDER") && !StringUtil.isNullOrEmpty((String)entry.getValue())){
+			}else if(entry.getKey().endsWith("_CINDER") && !StringUtil.isNullOrEmpty((String)entry.getValue()) && "T".equals(entry.getValue())){
 				countCinder++;
-			}else if(entry.getKey().endsWith("_GLANCE") && !StringUtil.isNullOrEmpty((String)entry.getValue())){
+			}else if(entry.getKey().endsWith("_GLANCE") && !StringUtil.isNullOrEmpty((String)entry.getValue()) && "T".equals(entry.getValue())){
 				countGlance++;
 			}else{
-				if(entry.getValue() == null || StringUtil.isNullOrEmpty(String.valueOf(entry.getValue()))){
+				BasisAttribute basisAttribute = basisAttributeMap.get(entry.getKey());
+				if(basisAttribute != null && "T".equals(basisAttribute.getRequired()) && (entry.getValue() == null || StringUtil.isNullOrEmpty(String.valueOf(entry.getValue())))){
 					result = false;
-					message = entry.getKey() + "不能为空";
+					message = basisAttribute.getAttributeName() + "不能为空";
 				}
 			}
 		}
@@ -89,9 +106,13 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	public Map<String, Object> checkNodeHostRequired(Map<String, Object> environmentObject, Map<String, Object> nodehostObject){
 		String message = null;
 		boolean result = true;
+		
 		if(!StringUtil.isNullOrEmpty((String)environmentObject.get("ID")) &&
 				!StringUtil.isNullOrEmpty((String)nodehostObject.get("HJPZID")) && 
 				environmentObject.get("ID").equals(nodehostObject.get("HJPZID"))){
+			
+			Map<String, BasisAttribute> basisAttributeMap = 
+					baisisAttributeDao.getByBasisSubstanceTypeIdWithColumnMap(Service.substanceTypeCache.get(NodeHost.class));
 			
 			for(Entry<String, Object> entry : nodehostObject.entrySet()){
 				if("JDJS".equals(entry.getKey()) || "XNHLX".equals(entry.getKey()) || "NOVA_CC".equals(entry.getKey())){
@@ -140,7 +161,7 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	 */
 	public Map<String, Object> checkGlusterFS(Map<String, Object> storageSchemeObject) {
 		boolean result = true;
-		if ("GlusterFS".equals(storageSchemeObject.get("FALX"))
+		if ("GlusterFS".equals(storageSchemeObject.get("GLUSTERFS"))
 				&& !StringUtil.isNullOrEmpty((String) storageSchemeObject.get("FWZJ"))) {
 			String[] servers = ((String) storageSchemeObject.get("FWZJ")).split(Constant.PARAM_SPLITER);
 			int c = Integer.parseInt((String) storageSchemeObject.get("SJFS"));
@@ -173,9 +194,9 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	public Map<String, Object> checkOCFS2(Map<String, Object> storageSchemeObject){
 		boolean result = true;
 		String message = null;
-		if ("OCFS2".equals(storageSchemeObject.get("FALX"))
+		if ("OCFS2".equals(storageSchemeObject.get("OCFS2"))
 				&& !StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFYGZ"))) {
-			if("T".equals(StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFYGZ")))){
+			if("T".equals(StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFSDGZ")))){
 				List<String> list = new ArrayList<String>();
 				list.add((String) storageSchemeObject.get("NOVA_GXCPID"));
 				list.add((String) storageSchemeObject.get("GLANCE_GXCPID"));
@@ -184,44 +205,32 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 					message = "CINDER共享磁盘ID不能与NOVA或GLANCE一致";
 				}
 			}else{
-				String[] iqns = ((String) storageSchemeObject.get("LJDYIQN")).split(Constant.PARAM_SPLITER);
-				String[] adds = ((String) storageSchemeObject.get("LJDYDZ")).split(Constant.PARAM_SPLITER);
-				List<String> list = new ArrayList<String>();
-				for(String iqn : iqns){
-					if(list.contains(iqn)){
-						result = false;
-						message = "IQN地址填写重复";
-					}else{
-						list.add(iqn);
-					}
-				}
-				
-				for(String add : adds){
-					if(list.contains(add)){
-						result = false;
-						message = "服务地址填写重复";
-					}else{
-						list.add(add);
-					}
-				}
-				
-				if(iqns.length < 2 || iqns.length > 3 || adds.length < 2 || adds.length > 3 || iqns.length != adds.length){
+				Set<Object> set = new HashSet<Object>();
+				set.add(storageSchemeObject.get("LJDYIQN_ONE"));
+				set.add(storageSchemeObject.get("LJDYIQN_TWO"));
+				set.add(storageSchemeObject.get("LJDYIQN_THREE"));
+				if(set.size() != 3){
 					result = false;
-					message = "服务器地址与IQN地址数量必须一致，且只能为2或3";
+					message = "IQN地址填写重复";
+				}
+				
+				set = new HashSet<Object>();
+				set.add(storageSchemeObject.get("LJDYDZ_ONE"));
+				set.add(storageSchemeObject.get("LJDYDZ_TWO"));
+				set.add(storageSchemeObject.get("LJDYDZ_THREE"));
+				if(set.size() != 3){
+					result = false;
+					message = "服务地址填写重复";
+				}
+				if(storageSchemeObject.get("LJDYDZ_ONE").equals(storageSchemeObject.get("LJDYDZ_TWO")) && 
+					(int)storageSchemeObject.get("NOVA_LJDY") == (int)storageSchemeObject.get("GLANCE_LJDY") &&
+					(int)storageSchemeObject.get("NOVA_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY")){
+				}else if((int)storageSchemeObject.get("NOVA_LJDY") != (int)storageSchemeObject.get("GLANCE_LJDY") &&
+						(int)storageSchemeObject.get("NOVA_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY") &&
+						(int)storageSchemeObject.get("GLANCE_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY")){
 				}else{
-					if(iqns.length == 2 && adds.length == 2 && 
-							(int)storageSchemeObject.get("GLANCE_LJDY") == (int)storageSchemeObject.get("NOVA_LJDY") &&
-							(int)storageSchemeObject.get("GLANCE_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY")){
-						
-					}else if(iqns.length == 3 && adds.length == 3 && 
-							(int)storageSchemeObject.get("GLANCE_LJDY") != (int)storageSchemeObject.get("NOVA_LJDY") &&
-							(int)storageSchemeObject.get("GLANCE_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY") &&
-							(int)storageSchemeObject.get("NOVA_LJDY") != (int)storageSchemeObject.get("CINDER_LJDY")){
-						
-					}else{
-						result = false;
-						message = "CINDER挂载的存储与GLANCE和NOVA不能一致，若挂载数量为3，则应相互不一致";
-					}
+					result = false;
+					message = "CINDER挂载的存储与GLANCE和NOVA不能一致，若挂载数量为3，则应相互不一致";
 				}
 			}
 		}

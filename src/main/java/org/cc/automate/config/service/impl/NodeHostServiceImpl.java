@@ -10,7 +10,9 @@ import org.cc.automate.config.service.NodeHostService;
 import org.cc.automate.core.ConfigCommandHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service("nodeHostService")
 public class NodeHostServiceImpl extends ServiceImpl<NodeHost> implements NodeHostService {
 	@Autowired

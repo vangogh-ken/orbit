@@ -22,14 +22,17 @@ public class JUELTest {
     	node1.put("CCWK", "eth2");
     	node1.put("CCWLIP", "192.168.100.195");
     	node1.put("CCWLYM", "255.225.225.0");
+    	node1.put("GLWLIP", "172.16.70.12");
     	Map<String, Object> node2 = new HashMap<String, Object>();
     	node2.put("ZJM", "nc6.chinacloud.com");
     	node2.put("CCWK", "eth2");
     	node2.put("CCWLIP", "192.168.100.196");
     	node2.put("CCWLYM", "255.225.225.0");
-    	list.add(node1);list.add(node2);
+    	node2.put("GLWLIP", "172.16.70.13");
+    	list.add(node1);
+    	list.add(node2);
     	
-    	variables.put("nodes", list);
+    	variables.put("nodehosts", list);
     	
     	JuelFactory.juelFactory().getValue("C:\\T\\config_template_v1.sls", "C:\\T\\ddd.sls", variables);
     }

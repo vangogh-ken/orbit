@@ -46,7 +46,7 @@ public class Resolver {
 		Resolver resolver = new Resolver(context);
 		try {
 			File sourceFile = new File(path);
-			List<String> lines = resolver.convertForeach(FileUtils.readLines(sourceFile, "UTF-8"));
+			List<String> lines = resolver.parseForeach(FileUtils.readLines(sourceFile, "UTF-8"));
 			StringBuilder text = new StringBuilder();
 			for(String s : lines){
 				text.append(s + "\r\n");
@@ -65,7 +65,7 @@ public class Resolver {
 		}
 	}
 	
-	public List<String> convertForeach(List<String> lines){
+	public List<String> parseForeach(List<String> lines){
 		List<String> list = new ArrayList<String>();
 		List<String> forEachLines = new ArrayList<String>();
 		Map<String, String> forEachAttr = new HashMap<String, String>();
@@ -78,6 +78,7 @@ public class Resolver {
 					if(matcher.groupCount() != 1){
 						throw new BusinessException("foreach tag parse failed, line number " + i);
 					}else{
+						forEachLines = new ArrayList<String>();//多个foreach标签的时候需要把之前的去除掉
 						String text = matcher.group(0);
 						forEachAttr = getForeachAttribute(text);
 						flag = false;

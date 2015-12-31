@@ -1,6 +1,5 @@
 package org.cc.automate.core;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -36,10 +35,15 @@ public class Constant {
 	/**
 	 * 配置文件存放路径
 	 */
-	public static String configSLSFilePath;
-	public static String configSLSTemplateV1Path;
+	public static String configTargetSLSPath;
+	public static String configTemplatePath_v1;
 	static{
-		Properties properties = new Properties();
+		PropertiesFactory propertiesFactory = CP_SpringContext.getBean(PropertiesFactory.class);
+		Properties properties = propertiesFactory.getProperties();
+		configTargetSLSPath = properties.getProperty("configTargetSLSPath");
+		configTemplatePath_v1 = properties.getProperty("configTemplatePath_v1");
+		
+		/*Properties properties = new Properties();
 			try {
 				LOG.info("初始化配置文件中");
 				properties.load(Constant.class.getResourceAsStream("/config/properties/path.properties"));
@@ -50,7 +54,7 @@ public class Constant {
 			} catch (IOException e) {
 				LOG.info("初始化配置文件出错， {}", e);
 				throw new BusinessException("初始化配置文件出错");
-			}
+			}*/
 	}
 	
 }
