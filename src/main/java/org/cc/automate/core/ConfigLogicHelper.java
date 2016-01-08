@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.cc.automate.config.domain.Environment;
 import org.cc.automate.config.domain.NodeHost;
@@ -115,19 +115,14 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 					baisisAttributeDao.getByBasisSubstanceTypeIdWithColumnMap(Service.substanceTypeCache.get(NodeHost.class));
 			
 			for(Entry<String, Object> entry : nodehostObject.entrySet()){
-				if("JDJS".equals(entry.getKey()) || "XNHLX".equals(entry.getKey()) || "NOVA_CC".equals(entry.getKey())){
-					if(StringUtil.isNullOrEmpty((String)entry.getValue())){
-						result = false;
-						message = entry.getKey() + "不能为空";
-					}
-				}else if("CCWK".equals(entry.getKey()) || "CCWLIP".equals(entry.getKey()) || "CCWLYM".equals(entry.getKey())){
-					if(!environmentObject.get("GLWD_S").equals(environmentObject.get("GLWD_Z")) || !environmentObject.get("CCWD_S").equals(environmentObject.get("CCWD_Z"))){
-						if(StringUtil.isNullOrEmpty((String)entry.getValue())){
-							result = false;
-							message = entry.getKey() + "不能为空";
-						}
-					}
-					
+				if(!result){
+					break;
+				}
+				
+				BasisAttribute basisAttribute = basisAttributeMap.get(entry.getKey());
+				if(basisAttribute != null && "T".equals(basisAttribute.getRequired()) && (entry.getValue() == null || StringUtil.isNullOrEmpty(String.valueOf(entry.getValue())))){
+					result = false;
+					message = basisAttribute.getAttributeName() + "不能为空";
 				}else if("VM_HOST".equals(entry.getKey()) || "VM_USER".equals(entry.getKey()) || "VM_PASSWORD".equals(entry.getKey()) || "VM_CLUSTER".equals(entry.getKey())){
 					if(nodehostObject.get("XNHLX").equals("VMWARE")){
 						if(StringUtil.isNullOrEmpty((String)entry.getValue())){
@@ -135,11 +130,6 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 							message = entry.getKey() + "不能为空";
 						}
 					}
-				}
-				
-				if(StringUtil.isNullOrEmpty((String)entry.getValue())){
-					result = false;
-					message = entry.getKey() + "不能为空";
 				}
 			}
 			
@@ -153,18 +143,89 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 		map.put("message", message);
 		return map;
 	}
+	
+	/**
+	 * 检查管理网络、存储网络是否在相应的网段
+	 * @param environmentObject
+	 * @param nodehostObject
+	 * @return
+	 */
+	public Map<String, Object> checkSubnet(Map<String, Object> environmentObject, Map<String, Object> nodehostObject){
+		boolean flag = true;
+		String message = null;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		int mgNetOne = (int)environmentObject.get("GLWD_ONE");
+		int mgNetTwo = (int)environmentObject.get("GLWD_TWO");
+		int mgNetThree = (int)environmentObject.get("GLWD_THREE");
+		int mgNetStart = (int)environmentObject.get("GLWD_START");
+		int mgNetEnd = (int)environmentObject.get("GLWD_END");
+		
+		int stNetOne = (int)environmentObject.get("CCWD_ONE");
+		int stNetTwo = (int)environmentObject.get("CCWD_TWO");
+		int stNetThree = (int)environmentObject.get("CCWD_THREE");
+		int stNetStart = (int)environmentObject.get("CCWD_START");
+		int stNetEnd = (int)environmentObject.get("CCWD_END");
+		
+		String mgIp = (String)nodehostObject.get("GLWLIP");
+		String[] ss = mgIp.split("\\.");
+		if(Integer.valueOf(ss[0]) == mgNetOne && Integer.valueOf(ss[1]) == mgNetTwo && Integer.valueOf(ss[2]) == mgNetThree &&
+				Integer.valueOf(ss[3]) >= mgNetStart && Integer.valueOf(ss[3]) <= mgNetEnd){
+		}else{
+			flag = false;
+			message = "节点管理IP: " + mgIp + " 不在预设的网段内";
+		}
+		if(flag){
+			String stIp = (String)nodehostObject.get("CCWLIP");
+			ss = stIp.split("\\.");
+			if(Integer.valueOf(ss[0]) == stNetOne && Integer.valueOf(ss[1]) == stNetTwo && Integer.valueOf(ss[2]) == stNetThree &&
+					Integer.valueOf(ss[3]) >= stNetStart && Integer.valueOf(ss[3]) <= stNetEnd){
+			}else{
+				flag = false;
+				message = "节点存储IP: " + stIp + " 不在预设的网段内";
+			}
+		}
+		map.put("result", flag);
+		map.put("message", message);
+		return map;
+	}
 	/**
 	 * 
 	 * 与Servers数量为GlusterFS的数据份数的倍数
 	 * @param storageSchemeObject
 	 * @return
 	 */
-	public Map<String, Object> checkGlusterFS(Map<String, Object> storageSchemeObject) {
+	public Map<String, Object> checkGlusterFS(Map<String, Object> environmentObject, Map<String, Object> storageSchemeObject) {
 		boolean result = true;
-		if ("GlusterFS".equals(storageSchemeObject.get("GLUSTERFS"))
+		Map<String, Object> map = new HashMap<String, Object>();
+		if ("T".equals(environmentObject.get("GLUSTERFS"))){
+			if(!StringUtil.isNullOrEmpty((String) storageSchemeObject.get("FWZJ"))){
+				String[] servers = ((String) storageSchemeObject.get("FWZJ")).split(Constant.PARAM_SPLITER);
+				int c = Integer.parseInt(String.valueOf(storageSchemeObject.get("SJFS")));
+				if (c == 0) {
+					result = true;
+				} else if (c == 2 && servers.length % 2 == 0) {
+					result = true;
+				} else if (c == 3 && servers.length % 3 == 0) {
+					result = true;
+				} else {
+					result = false;
+				}
+			}else{
+				result = false;
+			}
+		}
+		
+		String message = result == true ? null : "server数应为数据份数的倍数";
+		map.put("result", result);
+		map.put("message", message);
+		
+		return map;
+		
+		/*if ("T".equals(environmentObject.get("GLUSTERFS"))
 				&& !StringUtil.isNullOrEmpty((String) storageSchemeObject.get("FWZJ"))) {
 			String[] servers = ((String) storageSchemeObject.get("FWZJ")).split(Constant.PARAM_SPLITER);
-			int c = Integer.parseInt((String) storageSchemeObject.get("SJFS"));
+			int c = Integer.parseInt(String.valueOf(storageSchemeObject.get("SJFS")));
 			if (c == 0) {
 				result = true;
 			} else if (c == 2 && servers.length % 2 == 0) {
@@ -179,11 +240,11 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 		}
 		
 		String message = result == true ? null : "server数应为数据份数的倍数";
-		Map<String, Object> map = new HashMap<String, Object>();
+		
 		map.put("result", result);
 		map.put("message", message);
 		
-		return map;
+		return map;*/
 	}
 	
 	/**
@@ -191,12 +252,12 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	 * @param storageSchemeObject
 	 * @return
 	 */
-	public Map<String, Object> checkOCFS2(Map<String, Object> storageSchemeObject){
+	public Map<String, Object> checkOCFS2(Map<String, Object> environmentObject, Map<String, Object> storageSchemeObject){
 		boolean result = true;
 		String message = null;
-		if ("OCFS2".equals(storageSchemeObject.get("OCFS2"))
-				&& !StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFYGZ"))) {
-			if("T".equals(StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFSDGZ")))){
+		if ("T".equals(environmentObject.get("OCFS2"))
+				&& !StringUtil.isNullOrEmpty((String) storageSchemeObject.get("SFSDGZ"))) {
+			if("T".equals(storageSchemeObject.get("SFSDGZ"))){
 				List<String> list = new ArrayList<String>();
 				list.add((String) storageSchemeObject.get("NOVA_GXCPID"));
 				list.add((String) storageSchemeObject.get("GLANCE_GXCPID"));
@@ -255,11 +316,11 @@ public class ConfigLogicHelper implements ConfigAbstractHelper{
 	public Map<String, Object> checkHostNameByRole(String roleName, String hostName){
 		boolean result = true;
 		
-		if("cc".equals(roleName)){
+		if("CC".equals(roleName)){
 			result =  hostName.startsWith("cc") && hostName.matches("*\\.*\\.*");
-		}else if("nn".equals(roleName)){
+		}else if("NN".equals(roleName)){
 			result =  hostName.startsWith("nn") && hostName.matches("*\\.*\\.*");
-		}else if("nc".equals(roleName)){
+		}else if("NC".equals(roleName)){
 			result =  hostName.startsWith("nc") && hostName.matches("*\\.*\\.*");
 		}else{
 			result = false; 

@@ -4,17 +4,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.cc.automate.config.service.EnvironmentService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TestUnit {
 	private final static Logger LOG = LoggerFactory.getLogger(TestUnit.class);

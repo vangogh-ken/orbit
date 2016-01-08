@@ -2,6 +2,7 @@ package org.cc.automate.core;
 
 import java.util.Properties;
 
+import org.cc.automate.core.ssh.SSHClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,10 @@ public class Constant {
 	
 	public static final String USER_ID = "USER_ID";
 	public static final String DEFAULT_ENCODING = "UTF-8";
+	
+	public static boolean isRemoteExecute;
+	public static SSHClient deployServerSSHClient;
+	public static String deployConfigPath;
 	/**
 	 * 扫描节点命令路径
 	 */
@@ -43,18 +48,15 @@ public class Constant {
 		configTargetSLSPath = properties.getProperty("configTargetSLSPath");
 		configTemplatePath_v1 = properties.getProperty("configTemplatePath_v1");
 		
-		/*Properties properties = new Properties();
-			try {
-				LOG.info("初始化配置文件中");
-				properties.load(Constant.class.getResourceAsStream("/config/properties/path.properties"));
-				nodeCommandPath = properties.getProperty("nodeCommandPath");
-				deployCommandPath = properties.getProperty("deployCommandPath");
-				configSLSFilePath = properties.getProperty("configSLSFilePath");
-				configSLSTemplateV1Path = properties.getProperty("configSLSTemplateV1Path");
-			} catch (IOException e) {
-				LOG.info("初始化配置文件出错， {}", e);
-				throw new BusinessException("初始化配置文件出错");
-			}*/
+		deployConfigPath = properties.getProperty("deployServer.configPath");
+		
+		
+		isRemoteExecute = Boolean.valueOf(properties.getProperty("isRemoteExecute"));
+		
+		String ip = properties.getProperty("deployServer.ip");
+		String username = properties.getProperty("deployServer.username");
+		String password = properties.getProperty("deployServer.password");
+		deployServerSSHClient = new SSHClient(ip, username, password);
 	}
 	
 }

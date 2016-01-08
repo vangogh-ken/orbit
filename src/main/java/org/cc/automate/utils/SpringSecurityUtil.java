@@ -15,11 +15,12 @@ public class SpringSecurityUtil {
 	}
 
 	public static String getCurrentUserName() {
-		Authentication authentication = getAuthentication();
+		return "admin";//暂且不启用
+		/*Authentication authentication = getAuthentication();
 		if ((authentication == null) || (authentication.getPrincipal() == null)) {
 			return "";
 		}
 
-		return authentication.getName();
+		return authentication.getName();*/
 	}
 }

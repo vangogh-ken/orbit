@@ -298,9 +298,17 @@
     		stompClient.heartbeat.incoming = 1000;
     		stompClient.connect({}, function(frame){
     			//console.log('connected : ' + frame);
-    			stompClient.subscribe('/user/${USER_ID}/info', function(data){
-    				//console.log('body: ' + $.parseJSON(data.body).message);
-    				toastrMessgae('info', '消息推送', $.parseJSON(data.body).message);
+    			//stompClient.subscribe('/user/${USER_ID}/info', function(data){
+    			stompClient.subscribe('/user/admin/info', function(data){
+    				//console.log(data);
+    				console.log('result: ' + $.parseJSON(data.body).result);
+    				console.log('type: ' + $.parseJSON(data.body).type);
+    				console.log('message: ' + $.parseJSON(data.body).message);
+    				//toastrMessgae('info', '消息推送', $.parseJSON(data.body).message);
+    				//for(var key in data){
+    					//console.log(key + ' : ' + data.key);
+    				//}
+    				
     			});
     		}, function(error){
     			console.log('STOMP : ' + error);

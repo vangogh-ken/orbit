@@ -34,8 +34,8 @@ public interface EnvironmentService extends Service<Environment> {
 	 * @param basisSubstanceId
 	 * @return
 	 */
-	public Map<String, Object> execute(int version, String basisSubstanceId);
-	public Map<String, Object> executeV1(String basisSubstanceId);
+	public Map<String, Object> deploy(int version, String basisSubstanceId);
+	public Map<String, Object> deployV1(String basisSubstanceId);
 	/**
 	 * 检查环境名称是否重复
 	 * @param basisSubstanceId

@@ -17,8 +17,11 @@ import org.cc.orbit.core.juel.ExpressionFactoryImpl;
 import org.cc.orbit.core.juel.javax.el.ExpressionFactory;
 import org.cc.orbit.core.juel.javax.el.ValueExpression;
 import org.cc.orbit.core.juel.util.SimpleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Resolver {
+	private static Logger LOG = LoggerFactory.getLogger(Resolver.class);
 	private Context context;
 	
 	public Resolver(Context context){
@@ -52,7 +55,7 @@ public class Resolver {
 				text.append(s + "\r\n");
 			}
 			String targetPath = sourceFile.getPath().substring(0, sourceFile.getPath().lastIndexOf(File.separator)) + File.separator + new Date().getTime() + sourceFile.getName();
-			System.out.println(targetPath);
+
 			FileUtils.writeStringToFile(new File(targetPath), text.toString());
 			
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -91,8 +94,13 @@ public class Resolver {
 				if(matcher.find()){
 					if(!flag){
 						List<?> items = (List<?>)context.getVariable(forEachAttr.get("items"));
-						if(items == null){
-							throw new BusinessException("foreach tag parse failed, can't find variable in context: " + forEachAttr.get("items") + ", line number " + i);
+						if(items == null || items.isEmpty()){//如果参数为空或者数据为空，则
+							
+							LOG.warn("foreach tag parse failed, can't find variable in context: " + forEachAttr.get("items") + ", line number " + i);
+							flag = true;
+							continue;//直接跳过,继续进行解析
+							//return list;//直接空返回
+							//throw new BusinessException("foreach tag parse failed, can't find variable in context: " + forEachAttr.get("items") + ", line number " + i);
 						}else{
 							for(int j=0, size=items.size(); j<size; j++){
 								for(String forEachLine : forEachLines){

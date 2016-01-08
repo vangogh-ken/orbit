@@ -11,8 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cc.automate.core.Constant;
-
 public class UrlPutFilter implements Filter {
 
 	@Override

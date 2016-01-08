@@ -1,13 +1,11 @@
 package org.cc.automate.config.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.cc.automate.config.domain.Environment;
 import org.cc.automate.config.service.EnvironmentService;
-import org.cc.automate.config.service.Service;
 import org.cc.automate.core.BasisParamHelper;
 import org.cc.automate.core.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +109,10 @@ public class EnvironmentController extends BaseController{
 		return result;
 	}
 	
-	@RequestMapping(value = "/{basisSubstanceId}/execute", method = RequestMethod.GET)
-	public Map<String, Object> execute(@PathVariable String basisSubstanceId){
+	@RequestMapping(value = "/{basisSubstanceId}/deploy", method = RequestMethod.GET)
+	public Map<String, Object> deploy(@PathVariable String basisSubstanceId){
 		int version = 1;
-		return environmentService.execute(version, basisSubstanceId);
+		return environmentService.deploy(version, basisSubstanceId);
 	}
 	
 	//NODEHOST

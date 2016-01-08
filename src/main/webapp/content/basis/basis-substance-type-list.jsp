@@ -206,6 +206,8 @@
 			$('#basisAttributeModal').css("margin-left", margin);
 			$('#basisAttributeModal').css("width","1200px");
 			$('#basisAttributeModal').modal();
+			
+			$('.page-container').addClass('gauss-blur');
 		}
 	});
 	

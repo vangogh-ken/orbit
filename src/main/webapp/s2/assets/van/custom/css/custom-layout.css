@@ -775,6 +775,7 @@ filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=false);
 filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=false); /* IE6~IE11 */
 }
 
+
 .dropzone-custom{
 	min-height:120px;cursor: pointer;background-color:#cecece;border:1px solid #cecece;
 }

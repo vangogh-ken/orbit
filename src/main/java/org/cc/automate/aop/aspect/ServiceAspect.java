@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Component
 // 声明这是一个切面Bean
@@ -95,7 +94,7 @@ public class ServiceAspect {
 				LOG.info(e.getMessage());
 			}
 			
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			if (LOG.isInfoEnabled()) {
 				LOG.info("ServiceAspect around " + joinPoint + "\tUse time : " + (end - start) + " ms! with Rollback");
 			}

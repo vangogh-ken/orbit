@@ -1,6 +1,5 @@
 package org.cc.automate.core;
 
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Map;
 

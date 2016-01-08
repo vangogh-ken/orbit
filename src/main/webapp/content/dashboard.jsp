@@ -38,7 +38,7 @@
 <input id="initiateUrl" value="${ctx}/environments/6c7c7950-c73c-4c5a-9ea7-fe2a12c69f49/initiate"><br>
 <button id="doBtn" onclick="doInitiate();">initiate</button><br>
 <hr></hr>
-<input id="executeUrl" value="${ctx}/environments/6c7c7950-c73c-4c5a-9ea7-fe2a12c69f49/execute"><br>
+<input id="executeUrl" value="${ctx}/environments/6c7c7950-c73c-4c5a-9ea7-fe2a12c69f49/deploy"><br>
 <button id="doBtn" onclick="doExecute();">execute</button>
 </body>
 
@@ -110,7 +110,7 @@
 	
 	function doExecute(){
 		$.get($('#executeUrl').val(), function(data){
-			alert(data.result + ": \r\n" + data.message);
+			//alert(data.result + ": \r\n" + data.message);
 		});
 	}
 	
