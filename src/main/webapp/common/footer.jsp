@@ -319,6 +319,31 @@
     		stompClient.disconnect();
     	}
     	
+    	
+    	$(document).delegate('button', 'click', function(e){
+            if($(this).attr('data-dismiss') == 'modal'){
+                window.location.href = window.location.href;
+                //$('.page-container').addClass('gauss-blur');
+                //$('.page-container').removeClass('gauss-blur');
+           }
+            //$('.page-container').removeClass('gauss-blur');
+        });
+
+    	//$(function(){
+    		 $('.modal fade').on('show.bs.modal', function (e) {
+    			    var invoker = $(e.relatedTarget);
+    			    alert(invoker.html());
+    				  //$('.page-container').addClass('gauss-blur');
+    			  });
+    	//});
+    
+    	
+// 		  $('.modal .fade').on('show.bs.modal', function (e) {
+// 		    var invoker = $(e.relatedTarget);
+// 		    alert(invoker.html());
+// 			  //$('.page-container').addClass('gauss-blur');
+// 		  });
+
     	/* var websocket = null;
     	function websocketConnect(){
     		if('WebSocket' in window){

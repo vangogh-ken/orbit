@@ -29,6 +29,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONTest {
 	public StringBuilder content = new StringBuilder();
+	@Test
+	public void t12(){
+		String s = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+		System.out.println("192.168.1.254".matches(s));
+	}
+	
 	//@Test
 	public void t11(){
 		String[] ss = "172.16.70.15".split("\\.");
@@ -52,7 +58,7 @@ public class JSONTest {
 		fTPRemote.uploadWithSSL(client, new File("C:\\log\\Clogquartz-spring_demo.log"), "/home/pulsar/orbit/t/");
 	}
 	
-	@Test
+	//@Test
 	public void t8(){
 		SSHClient client = new SSHClient("172.16.71.106", "root", "huacloud");
 		//SSHClient client = new SSHClient("172.16.70.12", "root", "huacloud");
